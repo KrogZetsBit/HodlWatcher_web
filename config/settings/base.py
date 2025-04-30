@@ -30,10 +30,10 @@ TIME_ZONE = "Europe/Madrid"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = "en-us"
 # https://docs.djangoproject.com/en/dev/ref/settings/#languages
-# from django.utils.translation import gettext_lazy as _
 LANGUAGES = [
     ("en", _("English")),
     ("es", _("Spanish")),
+    ("fr", _("Spanish")),
     # Add more languages as needed
 ]
 MODELTRANSLATION_AUTO_POPULATE = True
