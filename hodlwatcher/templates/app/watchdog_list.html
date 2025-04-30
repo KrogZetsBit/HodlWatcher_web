@@ -1,0 +1,526 @@
+{% extends "base.html" %}
+
+{% load static i18n hodl_tags %}
+
+{% block title %}
+  {% trans "My Watchdogs" %}
+{% endblock title %}
+{% block content %}
+  <div class="container-fluid px-4 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">{% trans "My Watchdogs" %}</span>
+      </h1>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-11 col-xl-10">
+        <!-- Sección de Watchdogs Activos -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 me-3">
+                  <i class="bi bi-bell-fill"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Active Watchdogs" %}</span>
+                </h3>
+                <div class="ms-auto">
+                  {% if current_count < max_watchdogs %}
+                    <a href="{% url 'create_watchdog' %}" class="btn btn-primary">
+                      <i class="bi bi-plus-circle"></i> {% trans "New Watchdog" %}
+                    </a>
+                  {% else %}
+                    <button class="btn btn-outline-secondary" disabled>
+                      <i class="bi bi-exclamation-circle"></i> {% trans "Limit reached" %}
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                {% blocktrans %} You have {{ current_count }} of {{ max_watchdogs }} active watchdogs. {% endblocktrans %}
+              </div>
+              {% if watchdogs %}
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>{% trans "Operation" %}</th>
+                        <th>{% trans "Asset" %}</th>
+                        <th>{% trans "Amount" %}</th>
+                        <th>{% trans "Currency" %}</th>
+                        <th>{% trans "Payment Method" %}</th>
+                        <th>{% trans "Rate Fee" %}</th>
+                        <th>{% trans "Date" %}</th>
+                        <th class="text-end">{% trans "Actions" %}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                      {% for watchdog in watchdogs %}
+                        <tr>
+                          <td>
+                            <span class="badge bg-{% if watchdog.side == 'buy' %}danger{% else %}success{% endif %} bg-opacity-10 text-{% if watchdog.side == 'buy' %}danger{% else %}success{% endif %} border border-{% if watchdog.side == 'buy' %}danger{% else %}success{% endif %} border-opacity-25 py-2 px-3">
+                              <i class="bi bi-arrow-{% if watchdog.side == 'buy' %}down{% else %}up{% endif %}-circle me-1"></i>
+                              {% if watchdog.get_side_display == "Buy" %}
+                                {% trans "I want to Sell" %}
+                              {% else %}
+                                {% trans "I want to Buy" %}
+                              {% endif %}
+                            </span>
+                          </td>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <img class="crypto-icon me-2"
+                                   src="{% static 'assets/' %}{{ watchdog.asset_code|lower }}.svg"
+                                   width="32"
+                                   height="32"
+                                   alt="{{ watchdog.asset_code }}" />
+                              <span>{{ watchdog.asset_code }}</span>
+                            </div>
+                          </td>
+                          <td>{{ watchdog.amount }}</td>
+                          <td>
+                            <span class="fi fi-{{ watchdog.currency|lower }} fis me-2"></span>
+                            {{ watchdog.currency }}
+                          </td>
+                          <td>
+                            <i class="bi bi-credit-card me-1"></i>
+                            {% if payment_methods_dict|get_item:watchdog.payment_method_id %}
+                              {{ payment_methods_dict|get_item:watchdog.payment_method_id }}
+                            {% else %}
+                              {{ watchdog.payment_method_id }}
+                            {% endif %}
+                          </td>
+                          <td>{{ watchdog.rate_fee }}%</td>
+                          <td>{{ watchdog.created_at|date:"d/m/Y" }}</td>
+                          <td class="text-end">
+                            <form method="post" action="{% url 'deactivate_watchdog' watchdog.pk %}">
+                              {% csrf_token %}
+                              <button type="submit"
+                                      class="btn btn-sm btn-outline-danger"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="Desactivar Watchdog">
+                                <i class="bi bi-bell-slash"></i>
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <div class="alert alert-warning mb-4">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  {% trans "You have no active watchdogs" %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+        <!-- Sección de Watchdogs Desactivados -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-secondary bg-gradient text-white rounded-3 me-3">
+                  <i class="bi bi-bell-slash-fill"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Watchdogs Deactivated" %}</span>
+                </h3>
+              </div>
+              {% if inactive_watchdogs %}
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>{% trans "Operation" %}</th>
+                        <th>{% trans "Asset" %}</th>
+                        <th>{% trans "Amount" %}</th>
+                        <th>{% trans "Currency" %}</th>
+                        <th>{% trans "Payment Method" %}</th>
+                        <th>{% trans "Rate Fee" %}</th>
+                        <th>{% trans "Date" %}</th>
+                        <th class="text-end">{% trans "Actions" %}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                      {% for watchdog in inactive_watchdogs %}
+                        <tr>
+                          <td>
+                            <span class="badge bg-{% if watchdog.side == 'buy' %}danger{% else %}success{% endif %} bg-opacity-10 text-{% if watchdog.side == 'buy' %}danger{% else %}success{% endif %} border border-{% if watchdog.side == 'buy' %}danger{% else %}success{% endif %} border-opacity-25 py-2 px-3">
+                              <i class="bi bi-arrow-{% if watchdog.side == 'buy' %}down{% else %}up{% endif %}-circle me-1"></i>
+                              {% if watchdog.get_side_display == "Buy" %}
+                                {% trans "I want to Sell" %}
+                              {% else %}
+                                {% trans "I want to Buy" %}
+                              {% endif %}
+                            </span>
+                          </td>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <img class="crypto-icon me-2"
+                                   src="{% static 'assets/' %}{{ watchdog.asset_code|lower }}.svg"
+                                   width="32"
+                                   height="32"
+                                   alt="{{ watchdog.asset_code }}" />
+                              <span>{{ watchdog.asset_code }}</span>
+                            </div>
+                          </td>
+                          <td>{{ watchdog.amount }}</td>
+                          <td>
+                            <span class="fi fi-{{ watchdog.currency|lower }} fis me-2"></span>
+                            {{ watchdog.currency }}
+                          </td>
+                          <td>
+                            <i class="bi bi-credit-card me-1"></i>
+                            {% if payment_methods_dict|get_item:watchdog.payment_method_id %}
+                              {{ payment_methods_dict|get_item:watchdog.payment_method_id }}
+                            {% else %}
+                              {{ watchdog.payment_method_id }}
+                            {% endif %}
+                          </td>
+                          <td>{{ watchdog.rate_fee }}%</td>
+                          <td>{{ watchdog.created_at|date:"d/m/Y" }}</td>
+                          <td class="text-end">
+                            <div class="d-inline-flex">
+                              <form method="post"
+                                    action="{% url 'activate_watchdog' watchdog.pk %}"
+                                    class="me-1">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-success"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Activar Watchdog">
+                                  <i class="bi bi-bell"></i>
+                                </button>
+                              </form>
+                              <button type="button"
+                                      class="btn btn-sm btn-outline-dark delete-watchdog-btn"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#deleteWatchdogModal"
+                                      data-watchdog-id="{{ watchdog.pk }}"
+                                      data-asset-name="{{ watchdog.asset_code }}"
+                                      data-bs-placement="top"
+                                      title="Eliminar Definitivamente">
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <div class="alert alert-secondary mb-4">
+                  <i class="bi bi-info-circle me-2"></i>
+                  {% trans "You do not have watchdogs disabled" %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+        <!-- Alertas enviadas -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 me-3">
+                  <i class="bi bi-bell-fill"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Alert History" %}</span>
+                </h3>
+              </div>
+              <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                {% trans "Alerts more than 7 days old are deleted." %}
+              </div>
+              {% if historial_alertas %}
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% trans "Asset/Currency" %}</th>
+                        <th>{% trans "Operation" %}</th>
+                        <th>{% trans "Amount" %}</th>
+                        <th>{% trans "Offer" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th class="text-end">{% trans "Details" %}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                      {% for alerta in historial_alertas %}
+                        <tr>
+                          <td>{{ alerta.notified_at|date:"d/m/Y H:i" }}</td>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <img class="crypto-icon me-2"
+                                   src="{% static 'assets/' %}{{ alerta.watchdog.asset_code|lower }}.svg"
+                                   width="32"
+                                   height="32"
+                                   alt="{{ alerta.watchdog.asset_code }}" />
+                              <span>{{ alerta.watchdog.asset_code }}/{{ alerta.watchdog.currency }}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <span class="badge bg-{% if alerta.watchdog.side == 'buy' %}danger{% else %}success{% endif %} bg-opacity-10 text-{% if alerta.watchdog.side == 'buy' %}danger{% else %}success{% endif %} border border-{% if alerta.watchdog.side == 'buy' %}danger{% else %}success{% endif %} border-opacity-25 py-2 px-3">
+                              <i class="bi bi-arrow-{% if alerta.watchdog.side == 'buy' %}down{% else %}up{% endif %}-circle me-1"></i>
+                              {% if alerta.watchdog.side == "buy" %}
+                                {% trans "I want to Sell" %}
+                              {% else %}
+                                {% trans "I want to Buy" %}
+                              {% endif %}
+                            </span>
+                          </td>
+                          <td>{{ alerta.watchdog.amount }} {{ alerta.watchdog.currency }}</td>
+                          <td>
+                            <a href="https://hodlhodl.com/offers/{{ alerta.offer_id }}"
+                               class="btn btn-sm btn-outline-primary"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                              <i class="bi bi-box-arrow-up-right me-1"></i>
+                              <span class="d-none d-md-inline">{% trans "View Offer in HodlHodl" %}</span>
+                              <span class="d-inline d-md-none">{% trans "Offer" %}</span>
+                            </a>
+                          </td>
+                          <td>
+                            <span class="badge bg-{% if alerta.is_active %}success{% else %}secondary{% endif %} bg-opacity-10 text-{% if alerta.is_active %}success{% else %}secondary{% endif %} border border-{% if alerta.is_active %}success{% else %}secondary{% endif %} border-opacity-25 py-2 px-3">
+                              <i class="bi bi-{% if alerta.is_active %}check-circle{% else %}x-circle{% endif %} me-1"></i>
+                              {% if alerta.is_active %}
+                                {% trans "Active" %}
+                              {% else %}
+                                {% trans "Inactive" %}
+                              {% endif %}
+                            </span>
+                          </td>
+                          <td class="text-end">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#detalleAlerta{{ alerta.id }}"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    title="{% trans "View Details" %}">
+                              <i class="bi bi-info-circle"></i>
+                            </button>
+                          </td>
+                        </tr>
+                        <!-- Modal para mostrar detalles de la oferta -->
+                        <div class="modal fade"
+                             id="detalleAlerta{{ alerta.id }}"
+                             tabindex="-1"
+                             aria-labelledby="detalleAlertaLabel{{ alerta.id }}"
+                             aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow rounded-4">
+                              <div class="modal-header border-0 bg-primary bg-opacity-10">
+                                <div class="d-flex align-items-center">
+                                  <div class="feature bg-primary text-white rounded-3 me-3">
+                                    <i class="bi bi-info-circle"></i>
+                                  </div>
+                                  <h5 class="fw-bolder mb-0" id="detalleAlertaLabel{{ alerta.id }}">{% trans "Offer Details" %}</h5>
+                                </div>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body p-4">
+                                <div class="text-center mb-4">
+                                  <span class="display-5 fw-bold">
+                                    {% if alerta.watchdog.asset_code == "BTC" %}
+                                      <i class="bi bi-currency-bitcoin text-warning"></i>
+                                    {% else %}
+                                      <i class="bi bi-coin text-primary"></i>
+                                    {% endif %}
+                                    {{ alerta.watchdog.asset_code }}
+                                  </span>
+                                </div>
+                                <div class="row mb-3">
+                                  <div class="col-12 text-center mb-4">
+                                    <a href="https://hodlhodl.com/offers/{{ alerta.offer_id }}"
+                                       class="btn btn-primary rounded-3 px-4"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+                                      <i class="bi bi-box-arrow-up-right me-1"></i>
+                                      {% trans "Open Offer on HodlHodl" %}
+                                    </a>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="card border-0 bg-light rounded-3 mb-3">
+                                      <div class="card-body">
+                                        <p class="text-muted mb-1">{% trans "Operation" %}:</p>
+                                        <p class="fw-bold mb-0">
+                                          {% if alerta.watchdog.side == "buy" %}
+                                            <span class="badge bg-danger bg-opacity-75 text-white">{% trans "I want to Sell" %}</span>
+                                          {% else %}
+                                            <span class="badge bg-success bg-opacity-75 text-white">{% trans "I want to Buy" %}</span>
+                                          {% endif %}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div class="card border-0 bg-light rounded-3 mb-3">
+                                      <div class="card-body">
+                                        <p class="text-muted mb-1">{% trans "Notification Date" %}:</p>
+                                        <p class="fw-bold mb-0">{{ alerta.notified_at|date:"d/m/Y H:i:s" }}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6">
+                                    <div class="card border-0 bg-light rounded-3 mb-3">
+                                      <div class="card-body">
+                                        <p class="text-muted mb-1">{% trans "Amount" %}:</p>
+                                        <p class="fw-bold mb-0">{{ alerta.watchdog.amount }} {{ alerta.watchdog.currency }}</p>
+                                      </div>
+                                    </div>
+                                    <div class="card border-0 bg-light rounded-3 mb-3">
+                                      <div class="card-body">
+                                        <p class="text-muted mb-1">{% trans "Rate Fee" %}:</p>
+                                        <p class="fw-bold mb-0">{{ alerta.watchdog.rate_fee }}%</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="card border-0 bg-light rounded-3 mb-3">
+                                    <div class="card-body">
+                                      <p class="text-muted mb-1">{% trans "Offer ID" %}:</p>
+                                      <p class="fw-bold mb-0">{{ alerta.offer_id }}</p>
+                                    </div>
+                                  </div>
+                                  <div class="card border-0 bg-light rounded-3 mb-3">
+                                    <div class="card-body">
+                                      <p class="text-muted mb-1">{% trans "Title" %}:</p>
+                                      <p class="fw-bold mb-0">{{ alerta.watchdog.title }}</p>
+                                    </div>
+                                  </div>
+                                  <div class="card border-0 bg-light rounded-3 mb-3">
+                                    <div class="card-body">
+                                      <p class="text-muted mb-1">{% trans "Description" %}:</p>
+                                      <p class="fw-bold mb-0">{{ alerta.watchdog.description }}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                {% if alerta.offer_details %}
+                                  <div class="mt-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                      <div class="feature offer-detail bg-primary text-white rounded-3 me-2"
+                                           style="">
+                                        <i class="bi bi-code-square"></i>
+                                      </div>
+                                      <h6 class="fw-bold mb-0">{% trans "Offer Details" %}</h6>
+                                    </div>
+                                    <div class="bg-light p-3 rounded-3">
+                                      <pre class="mb-0 overflow-auto" style="max-height: 300px;"><code>{{ alerta.offer_details|pprint }}</code></pre>
+                                    </div>
+                                  </div>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="text-center mt-3">
+                  <small class="text-muted">{% trans "Showing" %} {{ historial_alertas|length }} {% trans "alerts" %}</small>
+                </div>
+              {% else %}
+                <div class="alert alert-warning mb-4">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  {% trans "There is no alert history." %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <!-- Modal de confirmación para eliminar watchdogs -->
+  <div class="modal fade"
+       id="deleteWatchdogModal"
+       tabindex="-1"
+       aria-labelledby="deleteWatchdogModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-header border-0 bg-danger bg-opacity-10">
+          <div class="d-flex align-items-center">
+            <div class="feature bg-danger text-white rounded-3 me-3">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h5 class="fw-bolder mb-0" id="deleteWatchdogModalLabel">{% trans "Confirm deletion" %}</h5>
+          </div>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="mb-0">{% trans "Are you sure you want to remove this watchdog? This action cannot be undone." %}</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i> {% trans "Cancel" %}
+          </button>
+          <button type="button" class="btn btn-danger rounded-3" id="confirmDelete">
+            <i class="bi bi-trash me-1"></i> {% trans "Definitive deletion" %}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% block page_js %}
+    <script>
+      // Inicializar los tooltips de Bootstrap
+      document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Manejar el modal de eliminación
+        const deleteModal = document.getElementById('deleteWatchdogModal');
+        if (deleteModal) {
+          deleteModal.addEventListener('show.bs.modal', function(event) {
+            // Botón que activó el modal
+            const button = event.relatedTarget;
+            // Extraer información
+            const watchdogId = button.getAttribute('data-watchdog-id');
+            // Guardar el ID del watchdog en el botón de confirmación
+            const confirmButton = document.getElementById('confirmDelete');
+            confirmButton.setAttribute('data-watchdog-id', watchdogId);
+          });
+
+          // Manejar el clic en el botón de confirmación
+          document.getElementById('confirmDelete').addEventListener('click', function() {
+            const currentLanguage = document.documentElement.lang || 'en';
+            const watchdogId = this.getAttribute('data-watchdog-id');
+            // Crear y enviar el formulario de eliminación
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/${currentLanguage}/watchdog/${watchdogId}/delete/`;
+
+            // Añadir el CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            form.appendChild(csrfToken);
+
+            document.body.appendChild(form);
+            form.submit();
+          });
+        }
+      });
+    </script>
+  {% endblock page_js %}
+{% endblock content %}

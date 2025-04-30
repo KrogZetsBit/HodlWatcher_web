@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% load static i18n hodl_tags %}
+
+{% block keywords %}
+  HodlHodl offers, Bitcoin marketplace, Cryptocurrency trading, P2P Bitcoin exchange, BTC buy sell, Bitcoin price comparison, Crypto payment methods, Best Bitcoin rates, HodlWatcher finder, Secure Bitcoin trading, Verified traders, Bitcoin offers search
+{% endblock keywords %}
+{% block description %}
+  Find the best Bitcoin offers on HodlHodl with our powerful search tool. Compare prices, payment methods, and seller ratings in real-time. Filter by amount, currency, and payment method to get the best deals for buying or selling BTC. Create custom Watchdogs to receive alerts for your perfect trade opportunities.
+{% endblock description %}
+{% block title %}
+  {% trans "HodlHodl offers" %} | HodlWatcher
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">{% trans "HodlHodl offers" %}</span>
+      </h1>
+    </div>
+    <!-- Filtros -->
+    <div class="card shadow border-0 rounded-4 mb-5">
+      <div class="card-body p-5">
+        <div class="d-flex align-items-center mb-4">
+          <div class="feature bg-primary text-white rounded-3 me-3">
+            <i class="bi bi-funnel"></i>
+          </div>
+          <h3 class="fw-bolder mb-0">
+            <span class="text-gradient d-inline">{% trans "Search Filters" %}</span>
+          </h3>
+        </div>
+        <form method="get" class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label d-block">{% trans "Operation" %}</label>
+            <div class="btn-group" role="group" aria-label="Tipo de operación">
+              <input type="radio"
+                     class="btn-check"
+                     name="side"
+                     id="sideOptionSell"
+                     value="sell"
+                     {% if form_data.side == 'sell' %}checked{% endif %}
+                     autocomplete="off" />
+              <label class="btn btn-outline-success" for="sideOptionSell">{% trans "I want to Buy" %}</label>
+              <input type="radio"
+                     class="btn-check"
+                     name="side"
+                     id="sideOptionBuy"
+                     value="buy"
+                     {% if form_data.side == 'buy' %}checked{% endif %}
+                     autocomplete="off" />
+              <label class="btn btn-outline-danger" for="sideOptionBuy">{% trans "I want to Sell" %}</label>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label for="asset_code" class="form-label">Cripto</label>
+            <input type="text"
+                   class="form-control"
+                   id="asset_code"
+                   name="asset_code"
+                   value="{{ asset.name }} ({{ asset.code }})"
+                   readonly />
+          </div>
+          <div class="col-md-2">
+            <label for="amount" class="form-label">Monto</label>
+            <input type="number"
+                   class="form-control"
+                   id="amount"
+                   name="amount"
+                   value="{{ form_data.amount }}" />
+          </div>
+          <div class="col-md-3">
+            <label for="currency_code" class="form-label">{% trans "Currency" %}</label>
+            <select class="form-select select2" id="currency_code" name="currency_code">
+              {% for currency in currencies %}
+                <option value="{{ currency.code }}"
+                        {% if form_data.currency_code == currency.code %}selected{% endif %}>
+                  {{ currency.name }} ({{ currency.code }})
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label for="payment_method_id" class="form-label">{% trans "Payment method" %}</label>
+            <select class="form-select select2"
+                    id="payment_method_id"
+                    name="payment_method_id">
+              {% for method in payment_methods %}
+                <option value="{{ method.id }}"
+                        {% if form_data.payment_method_id == method.id %}selected{% endif %}>{{ method.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <div class="form-check">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="new_user"
+                     name="new_user"
+                     value="1"
+                     {% if form_data.new_user == '1' %}checked{% endif %} />
+              <label class="form-check-label" for="new_user">{% trans "Include users without trades" %}</label>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-end gap-3">
+            <button type="submit" class="btn btn-primary w-50 flex-grow-1 py-2">
+              <i class="bi bi-search me-2"></i> {% trans "Search for offers" %}
+            </button>
+            {% if request.user.is_authenticated %}
+              <a href="{% url 'create_watchdog' %}"
+                 class="btn btn-primary w-50 flex-grow-1 py-2">
+                <i class="bi bi-plus-circle me-2"></i> {% trans "Create Watchdog" %}
+              </a>
+            {% else %}
+              <a href="{% url 'account_signup' %}"
+                 class="btn btn-primary w-50 flex-grow-1 py-2">
+                <i class="bi bi-plus-circle me-2"></i> {% trans "Create Watchdog" %}
+              </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Resultados -->
+    <div class="card shadow border-0 rounded-4">
+      <div class="card-body p-5">
+        <div class="d-flex align-items-center mb-4">
+          <div class="feature bg-primary text-white rounded-3 me-3">
+            <i class="bi bi-table"></i>
+          </div>
+          <h3 class="fw-bolder mb-0">
+            <span class="text-gradient d-inline">{% trans "Results" %}</span>
+          </h3>
+        </div>
+        <div class="d-flex align-items-center mb-4">
+          <span class="text-gradient">{% trans "Average price exchanges BTC: " %} <strong>{{ average_price|default:"N/A"|floatformat:2 }} {{ offers.0.currency_code }}</strong></span>
+        </div>
+        {% if error %}
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% trans "Error while loading offers:" %} {{ error }}
+          </div>
+        {% endif %}
+        {% if offers and offers.0.error != "Invalid input data" %}
+          <div class="alert alert-info mb-3">
+            {% if no_trades == '1' %}
+              <i class="bi bi-funnel-fill me-2"></i>
+              {% trans "Showing" %} {{ offers|length }} {% trans "best offers including users without trades." %}
+              <br />
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              {% trans "Please note that users without trades may not be reliable." %}
+            {% else %}
+              <i class="bi bi-funnel-fill me-2"></i>
+              {% trans "Showing" %} {{ offers|length }} {% trans "best offers with users with at least 1 trade." %}
+            {% endif %}
+          </div>
+        {% endif %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>{% trans "Seller" %}</th>
+                <th>{% trans "Price" %}</th>
+                {% comment %} <th>Comisión</th> {% endcomment %}
+                <th>{% trans "Limits" %}</th>
+                <th>{% trans "Payment method" %}</th>
+                <th>{% trans "Availability" %}</th>
+                <th>{% trans "Actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if offers and offers.0.error != "Invalid input data" %}
+                {% for offer in offers %}
+                  <tr>
+                    <!-- Columna Vendedor -->
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-3 position-relative">
+                          {% if offer.trader.online_status == 'online' %}
+                            <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle">
+                              <span class="visually-hidden">Online</span>
+                            </span>
+                          {% endif %}
+                        </div>
+                        <div>
+                          <strong>{{ offer.trader.login }}</strong>
+                          <div class="small text-muted">
+                            {% if offer.trader.trades_count %}
+                              {{ offer.trader.trades_count }} trades
+                            {% else %}
+                              {% trans "New seller" %}
+                            {% endif %}
+                            {% if offer.trader.country_code != 'Global' %}
+                              | <span class="fi fi-{{ offer.trader.country_code|lower }}"></span>
+                            {% endif %}
+                          </div>
+                          {% if offer.trader.verified %}
+                            <span class="badge bg-info text-dark mt-1">
+                              <i class="bi bi-patch-check-fill"></i> {% trans "Verified" %}
+                            </span>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </td>
+                    <!-- Columna Precio actualizada -->
+                    <td>
+                      <div class="d-flex flex-column">
+                        <!-- Precio de la oferta -->
+                        <strong>{{ offer.price }} {{ offer.currency_code }}</strong>
+                        <!-- Desviación del promedio -->
+                        <span class="badge {% if offer.percent_deviation > 0 %}bg-danger{% else %}bg-success{% endif %} mt-1">
+                          {% if offer.percent_deviation > 0 %}
+                            +{{ offer.percent_deviation|floatformat:2 }}%
+                          {% else %}
+                            {{ offer.percent_deviation|floatformat:2 }}%
+                          {% endif %}
+                        </span>
+                        <!-- Detalles adicionales -->
+                        <div class="small text-muted mt-1">
+                          <span>{{ offer.min_amount_sats|floatformat:0 }} - {{ offer.max_amount_sats|floatformat:0 }} sats</span>
+                        </div>
+                      </div>
+                    </td>
+                    <!-- Columna Límites -->
+                    <td>
+                      {{ offer.min_amount }} - {{ offer.max_amount }} {{ offer.currency_code }}
+                      <div class="small text-muted">
+                        {% if offer.first_trade_limit %}
+                          {% trans "First trade" %}: {{ offer.first_trade_limit }} {{ offer.currency_code }}
+                        {% endif %}
+                      </div>
+                    </td>
+                    <!-- Columna Métodos de Pago -->
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-sm btn-secondary" type="button">
+                          {% if offer.payment_method_instructions.0.payment_method_name %}
+                            {{ offer.payment_method_instructions.0.payment_method_name }}
+                          {% else %}
+                            {{ offer.payment_methods.0.name }}
+                          {% endif %}
+                        </button>
+                      </div>
+                      <div class="small text-muted mt-1">{{ offer.payment_window_minutes }} {% trans "minutes to pay" %}</div>
+                    </td>
+                    <!-- Columna Disponibilidad -->
+                    <td>
+                      {% if offer.working_now %}
+                        <span class="badge bg-success">
+                          <i class="bi bi-check-circle-fill"></i> {% trans "Active" %}
+                        </span>
+                      {% else %}
+                        <span class="badge bg-secondary">
+                          <i class="bi bi-pause-circle-fill"></i> {% trans "Inactive" %}
+                        </span>
+                      {% endif %}
+                      <div class="small text-muted mt-1">{{ offer.country }}</div>
+                    </td>
+                    <!-- Columna Acciones -->
+                    <td>
+                      <a href="https://hodlhodl.com/offers/{{ offer.id }}"
+                         target="_blank"
+                         class="btn btn-sm btn-outline-primary mb-1"
+                         data-bs-toggle="tooltip"
+                         title="{{ offer.title|truncatechars:50 }}">
+                        <i class="bi bi-eye"></i> {% trans "Go to HodlHodl" %}
+                      </a>
+                      <div class="small text-muted">
+                        {{ offer.confirmations }} {% trans "confirmation" %}{{ offer.confirmations|pluralize:"es" }}
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="7" class="text-center py-5">
+                    <i class="bi bi-exclamation-circle fs-1 text-muted"></i>
+                    <p class="mt-3">{% trans "No offers were found for these filters. Modify the filters to search for offers" %}</p>
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        {% if meta %}
+          <div class="d-flex justify-content-between mt-4">
+            <div class="text-muted">
+              {% blocktrans %} Displaying {{ meta.current_offset|add:1 }}-{{ meta.current_offset|add:meta.current_count }} of {{ meta.total_count }} offers {% endblocktrans %}
+            </div>
+            <nav>
+              <ul class="pagination">
+                {% if meta.current_page > 1 %}
+                  <li class="page-item">
+                    <a class="page-link"
+                       href="?{% query_transform page=meta.current_page|add:'-1' %}">« {% trans "Previous" %}</a>
+                  </li>
+                {% endif %}
+                {% if meta.current_page < meta.total_pages %}
+                  <li class="page-item">
+                    <a class="page-link"
+                       href="?{% query_transform page=meta.current_page|add:1 %}">{% trans "Next" %} »</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block page_js %}
+  <!-- Incluir CSS de Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
+  <!-- Incluir JS de jQuery y Select2 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.select2').select2({
+        theme: 'bootstrap-5'
+      });
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltipElements.forEach(el => new bootstrap.Tooltip(el));
+    });
+  </script>
+{% endblock page_js %}

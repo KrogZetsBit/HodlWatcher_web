@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% load static i18n crispy_forms_tags hodl_tags %}
+
+{% block description %}
+  Create a new custom alert (Watchdog) on HodlWatcher. Configure your specific conditions; buy/sell, amount, currency, payment method, fee rate; to receive automatic notifications for matching Bitcoin trades on HodlHodl.
+{% endblock description %}
+{% block keywords %}
+  Create Watchdog, New Watchdog, Configure Alert, HodlWatcher Alert, Bitcoin Alert, HodlHodl Alert, Custom Bitcoin Alert, Set Bitcoin Alert, Buy Bitcoin, Sell Bitcoin, Bitcoin Trading Conditions, Payment Method Filter, Fee Rate Filter, Automated Bitcoin Trading, HodlWatcher Configuration
+{% endblock keywords %}
+{% block title %}
+  {% trans "New Watchdog" %} | HodlWatcher
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">{% trans "New Watchdog" %}</span>
+      </h1>
+    </div>
+    <!-- Frase de resumen mejorada -->
+    <div class="card border-0 bg-light shadow-sm rounded-4 mb-4">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-start">
+          <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 p-3 me-3">
+            <i class="bi bi-chat-quote"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold text-gradient mb-2">{% trans "Summary of your Watchdog" %}</h5>
+            <p id="dynamic-phrase" class="mb-0 fs-5">
+              {% blocktrans with side=summary_data.side|lower amount=summary_data.amount currency=summary_data.currency asset=summary_data.asset payment_method=summary_data.payment_method rate_fee=summary_data.rate_fee %}
+                          I want <span id="phrase-side" class="fw-bold">{{ side }}</span>
+                          <span id="phrase-amount" class="fw-bold">{{ amount }}</span>
+                          <span id="phrase-currency" class="fw-bold">{{ currency }}</span> of
+                          <span id="phrase-asset" class="fw-bold">{{ asset }}</span> via
+                          "<span id="phrase-payment-method" class="fst-italic">{{ payment_method }}</span>"
+                          with a fee rate lower than <span id="phrase-rate-fee" class="fw-bold">{{ rate_fee }}</span>
+                      {% endblocktrans %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-11 col-xl-9 col-xxl-8">
+        {% if current_count >= max_watchdogs %}
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                {% trans "You already have the maximum of" %} {{ max_watchdogs }} {% trans "active watchdogs. Please deactivate one before creating another." %}
+              </div>
+              <a href="{% url 'watchdogs_list' %}" class="btn btn-primary">
+                <i class="bi bi-arrow-left me-1"></i> {% trans "Back to list" %}
+              </a>
+            </div>
+          </div>
+        {% else %}
+          <form method="post" id="watchdogForm">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card shadow border-0 rounded-4 mb-5">
+                  <div class="card-body p-5">
+                    <div class="d-flex align-items-center mb-4">
+                      <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 me-3">
+                        <i class="bi bi-gear-fill"></i>
+                      </div>
+                      <h3 class="fw-bolder mb-0">
+                        <span class="text-gradient d-inline">{% trans "Configuration" %}</span>
+                      </h3>
+                    </div>
+                    {{ form|crispy }}
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card shadow border-0 rounded-4 mb-5">
+                  <div class="card-body p-5">
+                    <div class="d-flex align-items-center mb-4">
+                      <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3 me-3">
+                        <i class="bi bi-card-checklist"></i>
+                      </div>
+                      <h3 class="fw-bolder mb-0">
+                        <span class="text-gradient d-inline">{% trans "Summary" %}</span>
+                      </h3>
+                    </div>
+                    <div class="mb-4 p-4 bg-light rounded-3">
+                      <div class="d-flex align-items-center mb-3">
+                        <div class="me-3">
+                          <span class="side-badge badge bg-{% if summary_data.side == 'Buy' %}danger{% else %}succes{% endif %} bg-opacity-10 text-{% if summary_data.side == 'Buy' %}danger{% else %}success{% endif %} border border-{% if summary_data.side == 'Buy' %}danger{% else %}success{% endif %} border-opacity-25 py-2 px-3">
+                            <i class="side-icon bi bi-arrow-{% if summary_data.side == 'Buy' %}up{% else %}down{% endif %}-circle me-1"></i>
+                            <span class="summary-side">
+                              {% if summary_data.side == 'Buy' %}
+                                {% trans "Sell" %}
+                              {% else %}
+                                {% trans "Buy" %}
+                              {% endif %}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                          <strong class="me-2">{% trans "Active" %}:</strong>
+                          <img class="crypto-icon me-2"
+                               src="{% static 'assets/' %}{{ summary_data.asset|lower }}.svg"
+                               width="32"
+                               height="32"
+                               alt="{{ summary_data.asset }}" />
+                          <span class="summary-asset">{{ summary_data.asset }}</span>
+                        </li>
+                        <li class="mb-2">
+                          <strong class="me-2">{% trans "Method of payment" %}:</strong>
+                          <span class="summary-payment-method">{{ summary_data.payment_method }}</span>
+                        </li>
+                        <li class="mb-2">
+                          <strong class="me-2">{% trans "Quantity" %}:</strong>
+                          <span class="summary-amount">{{ summary_data.amount }}</span>
+                        </li>
+                        <li class="mb-2">
+                          <strong class="me-2">{% trans "Currency" %}:</strong>
+                          <span class="currency-flag fi fi-{{ summary_data.currency|slice:':2'|lower }} fis me-2"></span><span class="summary-currency me-2">{{ summary_data.currency }}</span>
+                        </li>
+                        <li>
+                          <strong class="me-2">{% trans "Fee Rate" %}:</strong>
+                          <span class="summary-rate-fee">{{ summary_data.rate_fee }}</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="alert alert-info">
+                      <i class="bi bi-info-circle me-2"></i>
+                      {% trans "You have" %} {{ current_count }} {% trans "of" %} {{ max_watchdogs }} {% trans "active watchdogs" %}.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{% url 'watchdogs_list' %}"
+                 class="btn btn-outline-info me-md-2">
+                <i class="bi bi-list-ul me-1"></i> {% trans "Watchdog List" %}
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i> {% trans "Create Watchdog" %}
+              </button>
+            </div>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block page_js %}
+  <script src="{% static 'js/watchdog-form.js' %}"></script>
+  <!-- Incluir CSS de Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
+  <!-- Incluir JS de jQuery y Select2 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.select2').select2({
+        theme: 'bootstrap-5'
+      });
+    });
+  </script>
+{% endblock page_js %}

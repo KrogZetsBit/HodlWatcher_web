@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% load i18n static %}
+
+{% block description %}
+  {% trans "Detailed answer to the question:" %} {{ faq.question|striptags|truncatewords:20 }}
+{% endblock description %}
+{% block keywords %}
+  FAQ HodlWatcher, {{ faq.question|striptags|truncatewords:3 }}, help, support, answer
+{% endblock keywords %}
+{% block title %}
+  {{ faq.question|striptags|truncatechars:50 }} - {% trans "FAQ HodlWatcher" %}
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-11 col-xl-9 col-xxl-8">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'faq_list' %}" class="text-decoration-none">
+                <i class="bi bi-question-circle me-1"></i> {% trans "FAQ" %}
+              </a>
+            </li>
+            {% if faq.category %}
+              <li class="breadcrumb-item">
+                <a href="{% url 'faq_category_detail' faq.category.slug %}"
+                   class="text-decoration-none">{{ faq.category.name }}</a>
+              </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ faq.question|striptags|truncatechars:30 }}</li>
+          </ol>
+        </nav>
+        <!-- FAQ Detail Card -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <h1 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{{ faq.question }}</span>
+                </h1>
+              </div>
+              {% if faq.category %}
+                <div class="mb-4">
+                  <span class="badge bg-light text-primary py-2 px-3 rounded-pill">
+                    <i class="bi bi-tag me-1"></i> {{ faq.category.name }}
+                  </span>
+                </div>
+              {% endif %}
+              <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="faq-answer-content">{{ faq.answer|safe }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-5">
+                <a href="{% if faq.category %}{% url 'faq_category_detail' faq.category.slug %}{% else %}{% url 'faq_list' %}{% endif %}"
+                   class="btn btn-outline-primary rounded-3">
+                  <i class="bi bi-arrow-left me-1"></i>
+                  {% if faq.category %}
+                    {% trans "Back to" %} {{ faq.category.name }}
+                  {% else %}
+                    {% trans "Back to all questions" %}
+                  {% endif %}
+                </a>
+                <div class="btn-group" role="group">
+                  {% comment %} <a href="#" class="btn btn-outline-secondary rounded-3" onclick="window.print()">
+                                    <i class="bi bi-printer me-1"></i> {% trans "Print" %}
+                                </a>
+                                <a href="#" class="btn btn-outline-secondary rounded-3" onclick="window.location.hash='top'">
+                                    <i class="bi bi-arrow-up me-1"></i> {% trans "Top" %}
+                  </a> {% endcomment %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Related FAQs Section -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-link-45deg"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Related Questions" %}</span>
+                </h3>
+              </div>
+              <div class="list-group list-group-flush">
+                {% for related in related_faqs|slice:":5" %}
+                  <a href="{{ related.get_absolute_url }}"
+                     class="list-group-item list-group-item-action border-0 py-3">
+                    <div class="d-flex align-items-center">
+                      <div class="feature bg-light text-primary rounded-3 me-3">
+                        <i class="bi bi-question-lg"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-1">{{ related.question }}</h6>
+                        <small class="text-muted">{% trans "Click to view answer" %}</small>
+                      </div>
+                      {% if related.category %}
+                        <span class="ms-auto badge bg-light text-primary rounded-pill">{{ related.category.name }}</span>
+                      {% endif %}
+                    </div>
+                  </a>
+                {% empty %}
+                  <div class="text-center py-3 text-muted">{% trans "No related questions found" %}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

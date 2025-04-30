@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load allauth %}
+
+{% block title %}
+  Sign Out HodlWatcher
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">{% trans "Sign Out" %}</span>
+      </h1>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-11 col-xl-9 col-xxl-8">
+        <!-- Logout Confirmation Section -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-box-arrow-right"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">Logout Confirmation</span>
+                </h3>
+              </div>
+              <div class="text-center mb-4">
+                <p class="lead text-muted">{% trans 'Are you sure you want to sign out?' %}</p>
+              </div>
+              {% url 'account_logout' as action_url %}
+              <form method="post" action="{{ action_url }}" class="mb-4">
+                {% csrf_token %}
+                {{ form|crispy }}
+                {{ redirect_field|safe }}
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                  <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg px-4">Cancel</a>
+                  <button type="submit" class="btn btn-primary btn-lg px-4">{% trans 'Sign Out' %}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+        <!-- Additional Information Section -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-info-circle"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">Important Note</span>
+                </h3>
+              </div>
+              <p class="text-muted">
+                When you sign out, your current session will be terminated.
+                You'll need to log in again to access your account.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

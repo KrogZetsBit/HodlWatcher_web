@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% load i18n static %}
+
+{% block keywords %}
+  HodlHodl alerts, Bitcoin P2P alerts, HodlHodl price monitor, BTC price notifications, HodlHodl watchdog, automate HodlHodl offers, HodlWatcher, Telegram crypto alerts, Bitcoin trading tool HodlHodl, alertas HodlHodl, notificaciones HodlHodl, monitorizar Bitcoin P2P
+{% endblock keywords %}
+{% block description %}
+  HodlWatcher: HodlHodl alerts and Bitcoin P2P monitoring. Recibe notificaciones BTC via Telegram/Email. Automate your trading strategy 24/7. Free signup!
+{% endblock description %}
+{% block title %}
+  HodlWatcher
+{% endblock title %}
+{% block header %}
+  <!-- Header-->
+  <header class="py-5">
+    <div class="container px-5 pb-5">
+      <div class="row gx-5 align-items-center">
+        <div class="col-xxl-5">
+          <!-- Header text content-->
+          <div class="text-center text-xxl-start">
+            <div class="badge bg-gradient-primary-to-secondary text-white mb-4">
+              <div class="text-uppercase">{% trans "Your watchdog to buy or sell on HodlHodl" %}</div>
+            </div>
+            <div class="fs-3 fw-light text-muted">{% trans "I can help you to" %}</div>
+            <h1 class="display-3 fw-bolder mb-5">
+              <span class="text-gradient d-inline">{% trans "Receive alerts and take advantage" %}</span>
+            </h1>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xxl-start mb-3">
+              {% if not request.user.is_authenticated %}
+                <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder"
+                   href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+                <a class="btn btn-outline-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder"
+                   href="#about">{% trans "About" %}</a>
+              {% else %}
+                <a class="btn btn-outline-primary btn-lg px-5 py-3 fs-6 fw-bolder"
+                   href="{% url 'watchdogs_list' %}">{% trans "My Watchdogs" %}</a>
+                <a class="btn btn-primary btn-lg px-5 py-3 me-sm-3 fs-6 fw-bolder"
+                   href="{% url 'finder' %}">{% trans "Finder" %}</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-7">
+          <!-- Header profile picture-->
+          <div class="d-flex justify-content-center mt-5 mt-xxl-0">
+            <div class="profile bg-gradient-primary-to-secondary">
+              <!-- TIP: For best results, use a photo with a transparent background like the demo example below-->
+              <!-- Watch a tutorial on how to do this on YouTube (link)-->
+              <img class="profile-img"
+                   src="{% static "assets/watchdog.webp" %}"
+                   alt="..." />
+              <div class="dots-1">
+                <!-- SVG Dots-->
+                <svg version="1.1"
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     x="0px"
+                     y="0px"
+                     viewBox="0 0 191.6 1215.4"
+                     style="enable-background: new 0 0 191.6 1215.4"
+                     xml:space="preserve">
+                  <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
+                  <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z" />
+                  <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z" />
+                  <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z" />
+                  <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z" />
+                  <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z" />
+                  <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z" />
+                  <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z" />
+                  <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z" />
+                  <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z" />
+                  <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z" />
+                  <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z" />
+                  <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z" />
+                  <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z" />
+                  <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z" />
+                  <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z" />
+                  <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z" />
+                  <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z" />
+                  <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z" />
+                  <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z" />
+                  <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z" />
+                  </g>
+                </svg>
+                <!-- END of SVG dots-->
+              </div>
+              <div class="dots-2">
+                <!-- SVG Dots-->
+                <svg version="1.1"
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     x="0px"
+                     y="0px"
+                     viewBox="0 0 191.6 1215.4"
+                     style="enable-background: new 0 0 191.6 1215.4"
+                     xml:space="preserve">
+                  <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
+                  <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z" />
+                  <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z" />
+                  <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z" />
+                  <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z" />
+                  <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z" />
+                  <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z" />
+                  <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z" />
+                  <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z" />
+                  <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z" />
+                  <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z" />
+                  <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z" />
+                  <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z" />
+                  <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z" />
+                  <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z" />
+                  <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z" />
+                  <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z" />
+                  <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z" />
+                  <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z" />
+                  <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z" />
+                  <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z" />
+                  </g>
+                </svg>
+                <!-- END of SVG dots-->
+              </div>
+              <div class="dots-3">
+                <!-- SVG Dots-->
+                <svg version="1.1"
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     x="0px"
+                     y="0px"
+                     viewBox="0 0 191.6 1215.4"
+                     style="enable-background: new 0 0 191.6 1215.4"
+                     xml:space="preserve">
+                  <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
+                  <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z" />
+                  <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z" />
+                  <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z" />
+                  <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z" />
+                  <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z" />
+                  <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z" />
+                  <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z" />
+                  <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z" />
+                  <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z" />
+                  <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z" />
+                  <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z" />
+                  <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z" />
+                  <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z" />
+                  <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z" />
+                  <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z" />
+                  <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z" />
+                  <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z" />
+                  <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z" />
+                  <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z" />
+                  <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z" />
+                  </g>
+                </svg>
+                <!-- END of SVG dots-->
+              </div>
+              <div class="dots-4">
+                <!-- SVG Dots-->
+                <svg version="1.1"
+                     xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                     x="0px"
+                     y="0px"
+                     viewBox="0 0 191.6 1215.4"
+                     style="enable-background: new 0 0 191.6 1215.4"
+                     xml:space="preserve">
+                  <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)">
+                  <path d="M227.7,12788.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,12801.6,289.7,12808.6,227.7,12788.6z" />
+                  <path d="M1507.7,12788.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,12801.6,1569.7,12808.6,1507.7,12788.6z" />
+                  <path d="M227.7,11508.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,11521.6,289.7,11528.6,227.7,11508.6z" />
+                  <path d="M1507.7,11508.6c-151-50-253-216-222-362c25-119,136-230,254-255c194-41,395,142,375,339c-11,105-90,213-190,262        C1663.7,11521.6,1569.7,11528.6,1507.7,11508.6z" />
+                  <path d="M227.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,10241.6,289.7,10248.6,227.7,10228.6z" />
+                  <path d="M1507.7,10228.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,10241.6,1569.7,10248.6,1507.7,10228.6z" />
+                  <path d="M227.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,8961.6,289.7,8968.6,227.7,8948.6z" />
+                  <path d="M1507.7,8948.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,8961.6,1569.7,8968.6,1507.7,8948.6z" />
+                  <path d="M227.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,7681.6,289.7,7688.6,227.7,7668.6z" />
+                  <path d="M1507.7,7668.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,7681.6,1569.7,7688.6,1507.7,7668.6z" />
+                  <path d="M227.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,6401.6,289.7,6408.6,227.7,6388.6z" />
+                  <path d="M1507.7,6388.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,6401.6,1569.7,6408.6,1507.7,6388.6z" />
+                  <path d="M227.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,5121.6,289.7,5128.6,227.7,5108.6z" />
+                  <path d="M1507.7,5108.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,5121.6,1569.7,5128.6,1507.7,5108.6z" />
+                  <path d="M227.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,3841.6,289.7,3848.6,227.7,3828.6z" />
+                  <path d="M1507.7,3828.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,3841.6,1569.7,3848.6,1507.7,3828.6z" />
+                  <path d="M227.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,2561.6,289.7,2568.6,227.7,2548.6z" />
+                  <path d="M1507.7,2548.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,2561.6,1569.7,2568.6,1507.7,2548.6z" />
+                  <path d="M227.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C383.7,1281.6,289.7,1288.6,227.7,1268.6z" />
+                  <path d="M1507.7,1268.6c-105-35-200-141-222-248c-43-206,163-412,369-369c155,32,275,190,260,339c-11,105-90,213-190,262        C1663.7,1281.6,1569.7,1288.6,1507.7,1268.6z" />
+                  </g>
+                </svg>
+                <!-- END of SVG dots-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+{% endblock header %}
+{% block about %}
+  <!-- About Section-->
+  <section id="about" class="bg-light py-5">
+    <div class="container px-5">
+      <div class="row gx-5 justify-content-center">
+        <div class="col-xxl-8">
+          <div class="text-center my-5">
+            <h1 class="display-3 fw-bolder mb-5">
+              <span class="text-gradient d-inline">{% trans "About HodlWatch" %}</span>
+            </h1>
+            <h2 class="fw-light mb-4">{% trans "Your smart Bitcoin trading tool at HodlHodl." %}</h2>
+            <h2 class="text-muted">
+              {% trans "This platform allows users to create custom alerts on BTC buying and selling prices on HodlHodl, ensuring that you never miss a buying or selling opportunity on your terms." %}
+            </h2>
+            <div class="mt-5 text-start">
+              <h4 class="fw-bolder mb-3">{% trans "How does it work?" %}</h4>
+              <ul class="list-unstyled">
+                <li class="mb-2">
+                  <span class="me-2">📝</span>
+                  <strong>{% trans "Register" %}</strong>{% trans " to access the " %}<strong>Watchdog</strong>{% trans " in your alert control panel." %}
+                </li>
+                <li class="mb-2">
+                  <span class="me-2">🎯</span>
+                  <strong>{% trans "Configure your alerts" %}</strong>{% trans " according to your spending target in EUR, USD or BTC and the " %}<strong>{% trans "maximum fee rate" %}</strong>{% trans " desired." %}
+                </li>
+                <li class="mb-2">
+                  <span class="me-2">⚡</span>
+                  <strong>{% trans "Instant alerts" %}</strong>{% trans " via " %}<i class="bi bi-telegram text-primary"></i> <strong>Telegram</strong>{% trans " or " %}<i class="bi bi bi-envelope-fill text-primary"></i> <strong>E-mail</strong>{% trans " when we find offers that meet your conditions" %}.
+                </li>
+                <li class="mb-2">
+                  <span class="me-2">📚</span>
+                  <strong>{% trans "Need help?" %}</strong>{% trans " Check our " %}<a href="{% url 'faq_list' %}" class="text-primary"><strong>{% trans "FAQ section" %}</strong></a>{% trans " for comprehensive answers to common questions" %}.
+                </li>
+              </ul>
+            </div>
+            <!-- Sección de Beneficios Mejorada -->
+            <div class="mb-5" data-aos="fade-up">
+              <h2 class="fw-bolder text-center mb-4">{% trans "Why use HodlWatch?" %}</h2>
+              <div class="row g-4">
+                <div class="col-md-4">
+                  <div class="card h-100 border-0 shadow-sm transition-all hover-lift">
+                    <div class="card-body text-center p-4">
+                      <div class="feature-icon bg-primary bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                           style="height: 70px;
+                                  width: 70px">
+                        <i class="bi bi-alarm fs-2"></i>
+                      </div>
+                      <h5 class="fw-bolder">{% trans "Saves time" %}</h5>
+                      <p class="text-muted">{% trans "Forget about manually monitoring the market. HodlWatch works 24/7 for you." %}</p>
+                      <div class="d-flex align-items-center justify-content-center">
+                        <span class="badge rounded-pill bg-light text-dark fw-normal me-2">
+                          <i class="bi bi-clock me-1"></i> 24/7
+                        </span>
+                        <span class="badge rounded-pill bg-light text-dark fw-normal">
+                          <i class="bi bi-lightning me-1"></i> {% trans "Automatic" %}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card h-100 border-0 shadow-sm transition-all hover-lift">
+                    <div class="card-body text-center p-4">
+                      <div class="feature-icon bg-primary bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                           style="height: 70px;
+                                  width: 70px">
+                        <i class="bi bi-graph-up-arrow fs-2"></i>
+                      </div>
+                      <h5 class="fw-bolder">{% trans "Strategic purchasing" %}</h5>
+                      <p class="text-muted">{% trans "Buy or sell Bitcoin at exactly the price you want without obligation." %}</p>
+                      <div class="d-flex align-items-center justify-content-center">
+                        <span class="badge rounded-pill bg-light text-dark fw-normal me-2">
+                          <i class="bi bi-currency-bitcoin me-1"></i> {% trans "Best price" %}
+                        </span>
+                        <span class="badge rounded-pill bg-light text-dark fw-normal">
+                          <i class="bi bi-cash-stack me-1"></i> {% trans "Estrategy" %}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="card h-100 border-0 shadow-sm transition-all hover-lift">
+                    <div class="card-body text-center p-4">
+                      <div class="feature-icon bg-primary bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                           style="height: 70px;
+                                  width: 70px">
+                        <i class="bi bi-speedometer2 fs-2"></i>
+                      </div>
+                      <h5 class="fw-bolder">{% trans "Optimum performance" %}</h5>
+                      <p class="text-muted">{% trans "Instant alerts and personalized recommendations based on your objectives." %}</p>
+                      <div class="d-flex align-items-center justify-content-center">
+                        <span class="badge rounded-pill bg-light text-dark fw-normal me-2">
+                          <i class="bi bi-bell me-1"></i> {% trans "Notifications" %}
+                        </span>
+                        <span class="badge rounded-pill bg-light text-dark fw-normal">
+                          <i class="bi bi-person-check me-1"></i> {% trans "Personalized" %}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5">
+              <a href="{% url 'account_signup' %}"
+                 id="special-btn"
+                 class="btn btn-primary btn-lg px-5 py-3 position-relative pulsating-btn shadow-lg">
+                <i class="bi bi-rocket-takeoff me-2 fs-4"></i>
+                <span class="btn-text fs-4 fw-bold">{% trans "Register and get started now!" %}</span>
+                <span class="btn-shine"></span>
+              </a>
+            </div>
+            <div class="mt-5">
+              <a href="{% url 'finder' %}"
+                 id="special-btn"
+                 class="btn btn-primary btn-lg px-5 py-3 position-relative pulsating-btn shadow-lg">
+                <i class="bi bi-binoculars-fill me-2 fs-4"></i>
+                <span class="btn-text fs-4 fw-bold">{% trans "Test the offer finder!" %}</span>
+                <span class="btn-shine"></span>
+              </a>
+            </div>
+            <script>
+              // Script para añadir un pequeño movimiento de rebote adicional cada cierto tiempo
+              document.addEventListener('DOMContentLoaded', function() {
+                const btn = document.getElementById('special-btn');
+
+                // Función para añadir atención extra al botón periódicamente
+                function attentionBounce() {
+                  btn.classList.add('attention-bounce');
+                  setTimeout(() => {
+                    btn.classList.remove('attention-bounce');
+                  }, 1000);
+                }
+
+                // Llamar a la función cada 2 segundos
+                setInterval(attentionBounce, 2000);
+
+                // Añadir clase CSS para la animación de rebote
+                const style = document.createElement('style');
+                style.textContent = `
+                        @keyframes bounce {
+                          0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+                          40% {transform: translateY(-15px);}
+                          60% {transform: translateY(-7px);}
+                        }
+                        .attention-bounce {
+                          animation: bounce 1s ease;
+                        }
+                      `;
+                document.head.appendChild(style);
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock about %}
+{% block content %}
+{% endblock content %}

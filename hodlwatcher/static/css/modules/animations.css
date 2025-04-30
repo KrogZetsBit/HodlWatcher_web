@@ -1,0 +1,76 @@
+
+/* Reglas extraídas de styles.css */
+@keyframes progress-bar-stripes {
+  0% {
+    background-position-x: 1rem;
+  }
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg) /* rtl:ignore */;
+  }
+}
+
+@keyframes spinner-grow {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes placeholder-glow {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes placeholder-wave {
+  100% {
+    -webkit-mask-position: -200% 0%;
+            mask-position: -200% 0%;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(58, 71, 213, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(58, 71, 213, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(58, 71, 213, 0);
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes pulse-error {
+  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Reglas extraídas de styles.css */
+.pulse-animation {
+  animation: pulse-error 2s infinite;
+}
+
+/* Reglas extraídas de styles.css */
+.pulsating-btn {
+  animation: pulse 2s infinite;
+}
