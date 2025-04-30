@@ -11946,3 +11946,30 @@ html {
   height: 25px;
   font-size: 12px;
 }
+
+/* Estilo base del ícono */
+.bi-nostr-logo {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-image: url('/static/assets/nostr_logo_wht.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  transition: filter 0.3s ease;
+}
+
+.rounded-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.rounded-circle:hover .bi-nostr-logo {
+  filter: invert(1);
+}
