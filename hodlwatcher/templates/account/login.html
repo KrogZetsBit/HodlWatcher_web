@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load allauth account %}
+
+{% block title %}
+  Log In HodlWatcher
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">Sign In</span>
+      </h1>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-11 col-xl-9 col-xxl-8">
+        <!-- Login Section -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-person-check"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">Login to Your Account</span>
+                </h3>
+              </div>
+              {% if not SOCIALACCOUNT_ONLY %}
+                {% url 'account_login' as login_url %}
+                <form method="post" action="{{ login_url }}" class="mb-4">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                  {{ redirect_field|safe }}
+                  <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                </form>
+                {% setvar link %}
+                <a href="{{ signup_url }}" class="text-primary">
+                {% endsetvar %}
+                {% setvar end_link %}
+              </a>
+            {% endsetvar %}
+            <div class="text-center">
+              <p>
+                {% blocktranslate %}
+                                    Don't have an account? {{ link }}Sign up{{ end_link }} now.
+                                    {% endblocktranslate %}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+    <!-- Alternative Login Methods -->
+    {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+      <section>
+        <div class="card shadow border-0 rounded-4 mb-5">
+          <div class="card-body p-5">
+            <div class="d-flex align-items-center mb-4">
+              <div class="feature bg-primary text-white rounded-3 me-3">
+                <i class="bi bi-shield-lock"></i>
+              </div>
+              <h3 class="fw-bolder mb-0">
+                <span class="text-gradient d-inline">Alternative Login Methods</span>
+              </h3>
+            </div>
+            <div class="row">
+              {% if PASSKEY_LOGIN_ENABLED %}
+                <div class="col-md-6 mb-3">
+                  <form id="mfa_login" method="post">
+                    <button type="submit"
+                            id="passkey_login"
+                            class="btn btn-outline-primary w-100">
+                      <i class="bi bi-key"></i> Sign in with a Passkey
+                    </button>
+                  </form>
+                </div>
+              {% endif %}
+              {% if LOGIN_BY_CODE_ENABLED %}
+                <div class="col-md-6 mb-3">
+                  <a href="{{ request_login_code_url }}"
+                     class="btn btn-outline-primary w-100">
+                    <i class="bi bi-envelope"></i> Send me a Sign-in Code
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </section>
+    {% endif %}
+    <!-- Social Login -->
+    {% if SOCIALACCOUNT_ENABLED %}
+      <section>
+        <div class="card shadow border-0 rounded-4 mb-5">
+          <div class="card-body p-5">
+            <div class="d-flex align-items-center mb-4">
+              <div class="feature bg-primary text-white rounded-3 me-3">
+                <i class="bi bi-people"></i>
+              </div>
+              <h3 class="fw-bolder mb-0">
+                <span class="text-gradient d-inline">Social Login</span>
+              </h3>
+            </div>
+            {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+          </div>
+        </div>
+      </section>
+    {% endif %}
+  </div>
+</div>
+</div>
+{% endblock content %}
+{% block extra_body %}
+  {{ block.super }}
+  {% if PASSKEY_LOGIN_ENABLED %}
+    {% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
+  {% endif %}
+{% endblock extra_body %}

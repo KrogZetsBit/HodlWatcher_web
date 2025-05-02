@@ -1,0 +1,1 @@
+¡Alerta de Watchdog para {{ watchdog.asset_code }}/{{ watchdog.currency }}!

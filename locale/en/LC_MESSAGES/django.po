@@ -1,0 +1,1373 @@
+# Translations for the hodlwatcher project
+# Copyright (C) 2025 KrogZetsBit
+# KrogZetsBit <krogzetsbit@example.com>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-30 16:37+0200\n"
+"Language: en-US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "English"
+msgstr ""
+
+msgid "Spanish"
+msgstr ""
+
+msgid "HodlWatcher Administration"
+msgstr ""
+
+msgid "HodlWatcher Admin"
+msgstr ""
+
+#, python-format
+msgid ""
+"You already have the maximum of %s active watchdogs. Please deactivate one "
+"before creating another."
+msgstr ""
+
+msgid "Thank you for your message! We'll get back to you soon."
+msgstr ""
+
+msgid "There was an error with your submission. Please try again."
+msgstr ""
+
+msgid "An unexpected error occurred: "
+msgstr ""
+
+msgid "Invalid input data"
+msgstr ""
+
+msgid "No valid offers processed"
+msgstr ""
+
+msgid "Watchdog successfully created"
+msgstr ""
+
+msgid ""
+"You already have the maximum of {} active watchdogs. Please deactivate one "
+"before creating another."
+msgstr ""
+
+msgid "You have reached the limit of active watchdogs for your plan."
+msgstr ""
+
+msgid "Watchdog activated correctly."
+msgstr ""
+
+msgid ""
+"The watchdog does not exist or you do not have permission to activate it."
+msgstr ""
+
+msgid "Watchdog deactivated correctly."
+msgstr ""
+
+msgid ""
+"The watchdog does not exist or you do not have permission to disable it."
+msgstr ""
+
+msgid "Watchdog removed permanently."
+msgstr ""
+
+msgid "Please use the delete button from the watchdogs list."
+msgstr ""
+
+msgid "This Telegram user is already linked to another account."
+msgstr ""
+
+msgid "Telegram account successfully linked!"
+msgstr ""
+
+msgid ""
+"No Telegram user with that name was found. Please make sure you have started "
+"our bot with /start."
+msgstr ""
+
+msgid "Your Telegram account has been successfully unlinked."
+msgstr ""
+
+msgid "You didn't have any linked Telegram accounts."
+msgstr ""
+
+msgid "Your configuration was not found."
+msgstr ""
+
+msgid "Nombre"
+msgstr ""
+
+msgid "Orden"
+msgstr ""
+
+msgid "Activo"
+msgstr ""
+
+msgid "Categoría de FAQ"
+msgstr ""
+
+msgid "Categorías de FAQ"
+msgstr ""
+
+msgid "Pregunta"
+msgstr ""
+
+msgid "Respuesta"
+msgstr ""
+
+msgid "Categoría"
+msgstr ""
+
+msgid "Preguntas relacionadas"
+msgstr ""
+
+msgid "Fecha de creación"
+msgstr ""
+
+msgid "Fecha de actualización"
+msgstr ""
+
+msgid "Pregunta Frecuente"
+msgstr ""
+
+msgid "Preguntas Frecuentes"
+msgstr ""
+
+msgid "Access Forbidden (403) - HodlWatcher Security"
+msgstr ""
+
+msgid ""
+"Access to this page is restricted. HodlWatcher security protocols protect "
+"your crypto assets by limiting unauthorized access to restricted areas."
+msgstr ""
+
+msgid "403 Access Forbidden"
+msgstr ""
+
+msgid "Sorry, this vault requires a private key you don't have."
+msgstr ""
+
+msgid ""
+"Even Satoshi Nakamoto would need proper permissions to access this page!"
+msgstr ""
+
+msgid ""
+"If you believe you should have access to this page, please contact the "
+"administrator or verify your login credentials."
+msgstr ""
+
+msgid "Return to Dashboard"
+msgstr ""
+
+msgid "Request Access"
+msgstr ""
+
+msgid "Page Not Found (404) - HodlWatcher"
+msgstr ""
+
+msgid ""
+"The page you're looking for doesn't exist on HodlWatcher. Explore our crypto "
+"tracking tools or return to the dashboard."
+msgstr ""
+
+msgid "404 Coin Not Found"
+msgstr ""
+
+msgid "This block doesn't exist on our blockchain."
+msgstr ""
+
+msgid ""
+"Looks like this address has zero balance! Even our best miners couldn't find "
+"what you're looking for."
+msgstr ""
+
+msgid ""
+"The page you requested may have been moved to a different address, was never "
+"minted, or has been permanently burned."
+msgstr ""
+
+msgid "Missing block in the chain"
+msgstr ""
+
+msgid "Back to Dashboard"
+msgstr ""
+
+msgid "Previous Block"
+msgstr ""
+
+msgid "Server Error"
+msgstr ""
+
+msgid "500 Server Error"
+msgstr ""
+
+msgid "Oops! Our server is having a bad day."
+msgstr ""
+
+msgid "Even our Bitcoin-powered servers need a coffee break sometimes..."
+msgstr ""
+
+msgid ""
+"Our team has been notified and is working to fix the issue. Please try again "
+"later or contact support if the problem persists."
+msgstr ""
+
+msgid "Server reboot in progress..."
+msgstr ""
+
+msgid "Return Home"
+msgstr ""
+
+msgid "Report Issue"
+msgstr ""
+
+msgid "Account Inactive"
+msgstr ""
+
+msgid "This account is inactive."
+msgstr ""
+
+#, python-format
+msgid ""
+"We've sent a code to %(recipient)s. The code expires shortly, so please "
+"enter it soon."
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Confirm Access"
+msgstr ""
+
+msgid "Please reauthenticate to safeguard your account."
+msgstr ""
+
+msgid "Alternative options"
+msgstr ""
+
+msgid "Email Verification"
+msgstr ""
+
+msgid "Enter Verification Code"
+msgstr ""
+
+msgid "We've sent a verification code to:"
+msgstr ""
+
+msgid "Verify Email"
+msgstr ""
+
+msgid "Didn't receive the code?"
+msgstr ""
+
+msgid "Resend code"
+msgstr ""
+
+msgid "Sign In"
+msgstr ""
+
+msgid "Enter Sign-In Code"
+msgstr ""
+
+msgid "Password Reset"
+msgstr ""
+
+msgid "Enter Password Reset Code"
+msgstr ""
+
+msgid "Phone Verification"
+msgstr ""
+
+msgid "Enter Phone Verification Code"
+msgstr ""
+
+msgid "Email Addresses"
+msgstr ""
+
+msgid "The following email addresses are associated with your account:"
+msgstr ""
+
+msgid "Verified"
+msgstr ""
+
+msgid "Unverified"
+msgstr ""
+
+msgid "Primary"
+msgstr ""
+
+msgid "Make Primary"
+msgstr ""
+
+msgid "Re-send Verification"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Add Email Address"
+msgstr ""
+
+msgid "Add Email"
+msgstr ""
+
+msgid "Do you really want to remove the selected email address?"
+msgstr ""
+
+#, python-format
+msgid ""
+"You are receiving this email because you or someone else tried to signup for "
+"an\n"
+"account using email address:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"However, an account using that email address already exists.  In case you "
+"have\n"
+"forgotten about this, please use the password forgotten procedure to "
+"recover\n"
+"your account:\n"
+"\n"
+"%(password_reset_url)s"
+msgstr ""
+
+msgid "Account Already Exists"
+msgstr ""
+
+#, python-format
+msgid "Hello from %(site_name)s!"
+msgstr ""
+
+#, python-format
+msgid ""
+"Thank you for using %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+
+msgid ""
+"You are receiving this mail because the following change was made to your "
+"account:"
+msgstr ""
+
+#, python-format
+msgid ""
+"If you do not recognize this change then please take proper security "
+"precautions immediately. The change to your account originates from:\n"
+"\n"
+"- IP address: %(ip)s\n"
+"- Browser: %(user_agent)s\n"
+"- Date: %(timestamp)s"
+msgstr ""
+
+#, python-format
+msgid "Your email has been changed from %(from_email)s to %(to_email)s."
+msgstr ""
+
+msgid "Email Changed"
+msgstr ""
+
+msgid "Your email has been confirmed."
+msgstr ""
+
+msgid "Email Confirmation"
+msgstr ""
+
+#, python-format
+msgid ""
+"You're receiving this email because user %(user_display)s has given your "
+"email address to register an account on %(site_domain)s."
+msgstr ""
+
+msgid ""
+"Your email verification code is listed below. Please enter it in your open "
+"browser window."
+msgstr ""
+
+#, python-format
+msgid "To confirm this is correct, go to %(activate_url)s"
+msgstr ""
+
+msgid "Please Confirm Your Email Address"
+msgstr ""
+
+#, python-format
+msgid "Email address %(deleted_email)s has been removed from your account."
+msgstr ""
+
+msgid "Email Removed"
+msgstr ""
+
+msgid ""
+"Your sign-in code is listed below. Please enter it in your open browser "
+"window."
+msgstr ""
+
+msgid "This mail can be safely ignored if you did not initiate this action."
+msgstr ""
+
+msgid "Sign-In Code"
+msgstr ""
+
+msgid "Your password has been changed."
+msgstr ""
+
+msgid "Password Changed"
+msgstr ""
+
+msgid ""
+"Your password reset code is listed below. Please enter it in your open "
+"browser window."
+msgstr ""
+
+msgid "Password Reset Code"
+msgstr ""
+
+msgid ""
+"You're receiving this email because you or someone else has requested a "
+"password reset for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr ""
+
+msgid "Password Reset Email"
+msgstr ""
+
+msgid "Your password has been reset."
+msgstr ""
+
+msgid "Your password has been set."
+msgstr ""
+
+msgid "Password Set"
+msgstr ""
+
+#, python-format
+msgid ""
+"You are receiving this email because you, or someone else, tried to access "
+"an account with email %(email)s. However, we do not have any record of such "
+"an account in our database."
+msgstr ""
+
+msgid "If it was you, you can sign up for an account using the link below."
+msgstr ""
+
+msgid "Unknown Account"
+msgstr ""
+
+msgid "Email Address"
+msgstr ""
+
+msgid "Current email"
+msgstr ""
+
+msgid "Changing to"
+msgstr ""
+
+msgid "Your email address is still pending verification."
+msgstr ""
+
+msgid "Cancel Change"
+msgstr ""
+
+msgid "Change to"
+msgstr ""
+
+msgid "Change Email"
+msgstr ""
+
+msgid "Confirm Email Address"
+msgstr ""
+
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an email "
+"address for user %(user_display)s."
+msgstr ""
+
+#, python-format
+msgid ""
+"Unable to confirm %(email)s because it is already confirmed by a different "
+"account."
+msgstr ""
+
+#, python-format
+msgid ""
+"This email confirmation link expired or is invalid. Please <a "
+"href=\"%(email_url)s\">issue a new email confirmation request</a>."
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                                    Don't have an account? %(link)sSign "
+"up%(end_link)s now.\n"
+"                                    "
+msgstr ""
+
+msgid "Sign Out"
+msgstr ""
+
+msgid "Are you sure you want to sign out?"
+msgstr ""
+
+#, python-format
+msgid "You cannot remove your primary email address (%(email)s)."
+msgstr ""
+
+#, python-format
+msgid "Confirmation email sent to %(email)s."
+msgstr ""
+
+#, python-format
+msgid "You have confirmed %(email)s."
+msgstr ""
+
+#, python-format
+msgid "Removed email address %(email)s."
+msgstr ""
+
+#, python-format
+msgid "Successfully signed in as %(name)s."
+msgstr ""
+
+msgid "You have signed out."
+msgstr ""
+
+#, python-format
+msgid "A sign-in code has been sent to %(recipient)s."
+msgstr ""
+
+msgid "Password successfully changed."
+msgstr ""
+
+msgid "Password successfully set."
+msgstr ""
+
+#, python-format
+msgid "You have verified phone number %(phone)s."
+msgstr ""
+
+msgid "Primary email address set."
+msgstr ""
+
+msgid "Your primary email address must be verified."
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Forgot Password?"
+msgstr ""
+
+msgid "Account Recovery"
+msgstr ""
+
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll send you "
+"an email allowing you to reset it."
+msgstr ""
+
+msgid "Reset My Password"
+msgstr ""
+
+msgid "Please contact us if you have any trouble resetting your password."
+msgstr ""
+
+msgid "Password Reset Email Sent"
+msgstr ""
+
+msgid "Check Your Email"
+msgstr ""
+
+msgid ""
+"\n"
+"                                    We've sent you an email with password "
+"reset instructions. If you don't see it:\n"
+"                                    "
+msgstr ""
+
+msgid "Check your spam/junk folder"
+msgstr ""
+
+msgid "Wait a few minutes for delivery"
+msgstr ""
+
+msgid "Contact support if you still don't receive it"
+msgstr ""
+
+msgid "Contact Support"
+msgstr ""
+
+msgid "Bad Token"
+msgstr ""
+
+#, python-format
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a <a href=\"%(passwd_reset_url)s\">new password reset</"
+"a>."
+msgstr ""
+
+msgid "Your password is now changed."
+msgstr ""
+
+msgid "Set Password"
+msgstr ""
+
+msgid "Change Phone"
+msgstr ""
+
+msgid "Current phone"
+msgstr ""
+
+msgid "Your phone number is still pending verification."
+msgstr ""
+
+msgid "Verify Your Identity"
+msgstr ""
+
+msgid "Security Verification"
+msgstr ""
+
+msgid "Confirm Your Password"
+msgstr ""
+
+msgid "For security purposes, please enter your password to continue:"
+msgstr ""
+
+msgid "Verify Identity"
+msgstr ""
+
+msgid "Send me a sign-in code"
+msgstr ""
+
+msgid "You will receive a special code for a password-free sign-in."
+msgstr ""
+
+msgid "Request Code"
+msgstr ""
+
+msgid "Other sign-in options"
+msgstr ""
+
+msgid "Sign Up"
+msgstr ""
+
+#, python-format
+msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
+msgstr ""
+
+msgid "Sign up using a passkey"
+msgstr ""
+
+msgid "Signup"
+msgstr ""
+
+msgid "Passkey Sign Up"
+msgstr ""
+
+msgid "Other options"
+msgstr ""
+
+msgid "Sign Up Closed"
+msgstr ""
+
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+#, python-format
+msgid "You are already logged in as %(user_display)s."
+msgstr ""
+
+msgid "Warning:"
+msgstr ""
+
+msgid ""
+"You currently do not have any email address set up. You should really add an "
+"email address so you can receive notifications, reset your password, etc."
+msgstr ""
+
+msgid "Verify Your Email Address"
+msgstr ""
+
+msgid ""
+"We have sent an email to you for verification. Follow the link provided to "
+"finalize the signup process. If you do not see the verification email in "
+"your main inbox, check your spam folder. Please contact us if you do not "
+"receive the verification email within a few minutes."
+msgstr ""
+
+msgid ""
+"This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your email address. "
+msgstr ""
+
+msgid ""
+"We have sent an email to you for\n"
+"verification. Please click on the link inside that email. If you do not see "
+"the verification email in your main inbox, check your spam folder. "
+"Otherwise\n"
+"contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
+"email address</a>."
+msgstr ""
+
+msgid "HodlHodl offers"
+msgstr ""
+
+msgid "Search Filters"
+msgstr ""
+
+msgid "Operation"
+msgstr ""
+
+msgid "I want to Buy"
+msgstr ""
+
+msgid "I want to Sell"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Payment method"
+msgstr ""
+
+msgid "Include users without trades"
+msgstr ""
+
+msgid "Search for offers"
+msgstr ""
+
+msgid "Create Watchdog"
+msgstr ""
+
+msgid "Results"
+msgstr ""
+
+msgid "Average price exchanges BTC: "
+msgstr ""
+
+msgid "Error while loading offers:"
+msgstr ""
+
+msgid "Showing"
+msgstr ""
+
+msgid "best offers including users without trades."
+msgstr ""
+
+msgid "Please note that users without trades may not be reliable."
+msgstr ""
+
+msgid "best offers with users with at least 1 trade."
+msgstr ""
+
+msgid "Seller"
+msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "Limits"
+msgstr ""
+
+msgid "Availability"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "New seller"
+msgstr ""
+
+msgid "First trade"
+msgstr ""
+
+msgid "minutes to pay"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "Go to HodlHodl"
+msgstr ""
+
+msgid "confirmation"
+msgstr ""
+
+msgid ""
+"No offers were found for these filters. Modify the filters to search for "
+"offers"
+msgstr ""
+
+#, python-format
+msgid ""
+" Displaying %(meta.current_offset|add:1)s-"
+"%(meta.current_offset|add:meta.current_count)s of %(meta.total_count)s "
+"offers "
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Contact Us"
+msgstr ""
+
+msgid "Your watchdog to buy or sell on HodlHodl"
+msgstr ""
+
+msgid "I can help you to"
+msgstr ""
+
+msgid "Receive alerts and take advantage"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "My Watchdogs"
+msgstr ""
+
+msgid "Finder"
+msgstr ""
+
+msgid "About HodlWatch"
+msgstr ""
+
+msgid "Your smart Bitcoin trading tool at HodlHodl."
+msgstr ""
+
+msgid ""
+"This platform allows users to create custom alerts on BTC buying and selling "
+"prices on HodlHodl, ensuring that you never miss a buying or selling "
+"opportunity on your terms."
+msgstr ""
+
+msgid "How does it work?"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid " to access the "
+msgstr ""
+
+msgid " in your alert control panel."
+msgstr ""
+
+msgid "Configure your alerts"
+msgstr ""
+
+msgid " according to your spending target in EUR, USD or BTC and the "
+msgstr ""
+
+msgid "maximum fee rate"
+msgstr ""
+
+msgid " desired."
+msgstr ""
+
+msgid "Instant alerts"
+msgstr ""
+
+msgid " via "
+msgstr ""
+
+msgid " or "
+msgstr ""
+
+msgid " when we find offers that meet your conditions"
+msgstr ""
+
+msgid "Need help?"
+msgstr ""
+
+msgid " Check our "
+msgstr ""
+
+msgid "FAQ section"
+msgstr ""
+
+msgid " for comprehensive answers to common questions"
+msgstr ""
+
+msgid "Why use HodlWatch?"
+msgstr ""
+
+msgid "Saves time"
+msgstr ""
+
+msgid ""
+"Forget about manually monitoring the market. HodlWatch works 24/7 for you."
+msgstr ""
+
+msgid "Automatic"
+msgstr ""
+
+msgid "Strategic purchasing"
+msgstr ""
+
+msgid "Buy or sell Bitcoin at exactly the price you want without obligation."
+msgstr ""
+
+msgid "Best price"
+msgstr ""
+
+msgid "Estrategy"
+msgstr ""
+
+msgid "Optimum performance"
+msgstr ""
+
+msgid ""
+"Instant alerts and personalized recommendations based on your objectives."
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Personalized"
+msgstr ""
+
+msgid "Register and get started now!"
+msgstr ""
+
+msgid "Test the offer finder!"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Profile Info"
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Update Profile"
+msgstr ""
+
+msgid "Telegram configuration"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Watchdog alert status"
+msgstr ""
+
+msgid "Activated"
+msgstr ""
+
+msgid "Deactivated"
+msgstr ""
+
+msgid "Available commands"
+msgstr ""
+
+msgid "Consult or modify the configured rate fees"
+msgstr ""
+
+msgid "Activate or deactivate all watchdogs alerts"
+msgstr ""
+
+msgid "List your configured watchdogs"
+msgstr ""
+
+msgid "number"
+msgstr ""
+
+msgid "Activates/deactivates a specific watchdog"
+msgstr ""
+
+msgid "View the current status of your alerts and rate fees"
+msgstr ""
+
+msgid "Send an alert with your configured rate fees"
+msgstr ""
+
+msgid "Show this help message"
+msgstr ""
+
+msgid "Unlink Telegram"
+msgstr ""
+
+msgid "You do not have Telegram connected to your account."
+msgstr ""
+
+msgid "To connect"
+msgstr ""
+
+msgid "Search for our bot on Telegram"
+msgstr ""
+
+msgid "Send the command"
+msgstr ""
+
+msgid "Go to the account link page"
+msgstr ""
+
+msgid "Link account"
+msgstr ""
+
+msgid "Authenticator App"
+msgstr ""
+
+msgid "Authentication using an authenticator app is active."
+msgstr ""
+
+msgid "An authenticator app is not active."
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Recovery Codes"
+msgstr ""
+
+#, python-format
+msgid ""
+"There is %(unused_count)s out of %(total_count)s recovery codes available."
+msgid_plural ""
+"There are %(unused_count)s out of %(total_count)s recovery codes available."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "No recovery codes set up."
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Generate"
+msgstr ""
+
+msgid "Security Keys"
+msgstr ""
+
+#, python-format
+msgid "You have added %(count)s security key."
+msgid_plural "You have added %(count)s security keys."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "No security keys have been added."
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "New Watchdog"
+msgstr ""
+
+msgid "Summary of your Watchdog"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"                          I want <span id=\"phrase-side\" class=\"fw-"
+"bold\">%(side)s</span>\n"
+"                          <span id=\"phrase-amount\" class=\"fw-"
+"bold\">%(amount)s</span>\n"
+"                          <span id=\"phrase-currency\" class=\"fw-"
+"bold\">%(currency)s</span> of\n"
+"                          <span id=\"phrase-asset\" class=\"fw-"
+"bold\">%(asset)s</span> via\n"
+"                          \"<span id=\"phrase-payment-method\" class=\"fst-"
+"italic\">%(payment_method)s</span>\"\n"
+"                          with a fee rate lower than <span id=\"phrase-rate-"
+"fee\" class=\"fw-bold\">%(rate_fee)s</span>\n"
+"                      "
+msgstr ""
+
+msgid "You already have the maximum of"
+msgstr ""
+
+msgid "active watchdogs. Please deactivate one before creating another."
+msgstr ""
+
+msgid "Back to list"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Sell"
+msgstr ""
+
+msgid "Buy"
+msgstr ""
+
+msgid "Method of payment"
+msgstr ""
+
+msgid "Quantity"
+msgstr ""
+
+msgid "Fee Rate"
+msgstr ""
+
+msgid "You have"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "active watchdogs"
+msgstr ""
+
+msgid "Watchdog List"
+msgstr ""
+
+msgid "Active Watchdogs"
+msgstr ""
+
+msgid "Limit reached"
+msgstr ""
+
+#, python-format
+msgid " You have %(current_count)s of %(max_watchdogs)s active watchdogs. "
+msgstr ""
+
+msgid "Asset"
+msgstr ""
+
+msgid "Amount"
+msgstr ""
+
+msgid "Payment Method"
+msgstr ""
+
+msgid "Rate Fee"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "You have no active watchdogs"
+msgstr ""
+
+msgid "Watchdogs Deactivated"
+msgstr ""
+
+msgid "You do not have watchdogs disabled"
+msgstr ""
+
+msgid "Alert History"
+msgstr ""
+
+msgid "Alerts more than 7 days old are deleted."
+msgstr ""
+
+msgid "Asset/Currency"
+msgstr ""
+
+msgid "Offer"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "View Offer in HodlHodl"
+msgstr ""
+
+msgid "View Details"
+msgstr ""
+
+msgid "Offer Details"
+msgstr ""
+
+msgid "Open Offer on HodlHodl"
+msgstr ""
+
+msgid "Notification Date"
+msgstr ""
+
+msgid "Offer ID"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "alerts"
+msgstr ""
+
+msgid "There is no alert history."
+msgstr ""
+
+msgid "Confirm deletion"
+msgstr ""
+
+msgid ""
+"Are you sure you want to remove this watchdog? This action cannot be undone."
+msgstr ""
+
+msgid "Definitive deletion"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "Log in"
+msgstr ""
+
+msgid "Sign up"
+msgstr ""
+
+msgid "All rights reserved."
+msgstr ""
+
+msgid "Privacy"
+msgstr ""
+
+msgid "Terms"
+msgstr ""
+
+msgid "Back to top"
+msgstr ""
+
+msgid "Browse frequently asked questions about HodlWatcher in the"
+msgstr ""
+
+msgid "category"
+msgstr ""
+
+msgid "FAQ HodlWatcher"
+msgstr ""
+
+msgid "Find answers to common questions in this category"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "All Questions"
+msgstr ""
+
+msgid "View full answer"
+msgstr ""
+
+msgid "No FAQs Available"
+msgstr ""
+
+msgid "There are no frequently asked questions available in this category."
+msgstr ""
+
+msgid "Back to all questions"
+msgstr ""
+
+msgid "Detailed answer to the question:"
+msgstr ""
+
+msgid "FAQ"
+msgstr ""
+
+msgid "Back to"
+msgstr ""
+
+msgid "Related Questions"
+msgstr ""
+
+msgid "Click to view answer"
+msgstr ""
+
+msgid "No related questions found"
+msgstr ""
+
+msgid ""
+"Find answers to common questions about HodlWatcher, including features, "
+"usage, alerts, and account management in our comprehensive FAQ section."
+msgstr ""
+
+msgid "Frequently Asked Questions (FAQ) about HodlWatcher"
+msgstr ""
+
+msgid "Frequently Asked Questions"
+msgstr ""
+
+msgid "Find answers to the most common questions about HodlWatcher"
+msgstr ""
+
+msgid "There are no frequently asked questions available at this time."
+msgstr ""
+
+msgid "Need Help?"
+msgstr ""
+
+msgid ""
+"If you have any questions, please don't hesitate to contact our support team."
+msgstr ""
+
+msgid "Personal info"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Important dates"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "This username has already been taken."
+msgstr ""
+
+msgid "Name of User"
+msgstr ""
+
+msgid "Information successfully updated"
+msgstr ""

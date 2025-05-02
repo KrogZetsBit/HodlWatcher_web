@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% trans "Access Forbidden (403) - HodlWatcher Security" %}
+{% endblock title %}
+{% block keywords %}
+  403 error, forbidden access, unauthorized, HodlWatcher security, crypto security
+{% endblock keywords %}
+{% block description %}
+  {% trans "Access to this page is restricted. HodlWatcher security protocols protect your crypto assets by limiting unauthorized access to restricted areas." %}
+{% endblock description %}
+{% block content %}
+  <section class="py-5">
+    <div class="container px-5">
+      <div class="row gx-5 justify-content-center">
+        <div class="col-lg-8 col-xl-7 col-xxl-6">
+          <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-5 text-center">
+              <div class="feature style-403 bg-gradient rounded-3 mb-4 mx-auto text-white">
+                <i class="bi bi-safe fs-1"></i>
+              </div>
+              <h1 class="fw-bolder text-gradient text-primary mb-4">{% trans "403 Access Forbidden" %}</h1>
+              <p class="lead fw-medium mb-4">{% trans "Sorry, this vault requires a private key you don't have." %}</p>
+              <!-- Humorous content -->
+              <div class="card bg-soft-warning border-0 rounded-4 mb-4">
+                <div class="card-body">
+                  <p class="mb-0 fst-italic">{% trans "Even Satoshi Nakamoto would need proper permissions to access this page!" %}</p>
+                </div>
+              </div>
+              <hr class="my-4" />
+              <p class="text-muted mb-4">
+                {% trans "If you believe you should have access to this page, please contact the administrator or verify your login credentials." %}
+              </p>
+              <!-- Animated lock icon -->
+              <div class="mb-4">
+                <div class="d-inline-block position-relative" id="lockAnimation">
+                  <i class="bi bi-lock-fill text-danger fs-1"></i>
+                  <small class="position-absolute start-100 top-0 translate-middle badge rounded-pill bg-danger animate-pulse">
+                    403
+                  </small>
+                </div>
+              </div>
+              <a href="{% url 'home' %}"
+                 class="btn btn-primary btn-lg px-4 py-2 me-sm-3 fs-6 fw-bolder">
+                <i class="bi bi-house-door-fill me-2"></i>{% trans "Return to Dashboard" %}
+              </a>
+              <a href="{% url 'contact' %}"
+                 class="btn btn-outline-primary btn-lg px-4 py-2 fs-6 fw-bolder">
+                <i class="bi bi-envelope-fill me-2"></i>{% trans "Request Access" %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% block page_js %}
+    <script>
+      // Add a subtle animation to the lock icon
+      document.addEventListener("DOMContentLoaded", function() {
+        const lockAnimation = document.getElementById('lockAnimation');
+
+        // Create CSS for the pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+      .animate-pulse {
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+      #lockAnimation:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+      }
+    `;
+        document.head.appendChild(style);
+
+        // Add hover effect with a small shake
+        lockAnimation.addEventListener('mouseover', function() {
+          this.style.animation = 'shake 0.5s';
+          this.style.animationIterationCount = '1';
+        });
+
+        lockAnimation.addEventListener('mouseout', function() {
+          this.style.animation = '';
+        });
+
+        // Add shake animation
+        const shakeStyle = document.createElement('style');
+        shakeStyle.textContent = `
+      @keyframes shake {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(5deg); }
+        50% { transform: rotate(0deg); }
+        75% { transform: rotate(-5deg); }
+        100% { transform: rotate(0deg); }
+      }
+    `;
+        document.head.appendChild(shakeStyle);
+      });
+    </script>
+  {% endblock page_js %}
+{% endblock content %}

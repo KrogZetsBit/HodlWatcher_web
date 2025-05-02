@@ -1,0 +1,27 @@
+@charset "UTF-8";
+/*
+ * Archivo principal que importa los módulos CSS
+ * Para reducir el tamaño final, puedes comentar las importaciones
+ * de los módulos que no necesites.
+ */
+
+/* Importar variables y estilos base */
+@import 'modules/variables.css';
+@import 'modules/base.css';
+
+/* Sistema de grid */
+@import 'modules/grid.css';
+
+/* Componentes */
+@import 'modules/components.css';
+
+/* Utilidades */
+@import 'modules/utilities.css';
+
+/* Animaciones */
+@import 'modules/animations.css';
+
+/* Componentes específicos de la aplicación */
+@import 'modules/app.css';
+
+/* @import 'styles.css'; */

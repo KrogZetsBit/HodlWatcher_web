@@ -1,0 +1,12 @@
+HiddenServiceDir /var/lib/tor/traefik/
+HiddenServicePort 80 traefik:81
+HiddenServicePort 443 traefik:443
+HiddenServicePort 5555 traefik:5555
+
+# Modo de un solo salto para mayor rendimiento
+HiddenServiceSingleHopMode 1
+HiddenServiceNonAnonymousMode 1
+
+# Deshabilitar otras funciones de Tor que no necesitamos
+SocksPolicy reject *
+SocksPort 0

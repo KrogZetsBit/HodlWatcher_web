@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuevo mensaje de contacto - HodlWatcher</title>
+    <style>
+      /* Estilos base */
+      body {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #0061f2 0%, #6900c7 100%);
+        padding: 24px;
+        text-align: center;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        margin: 0;
+        color: white;
+        text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+        letter-spacing: 0.5px;
+      }
+
+      .header p {
+        margin: 10px 0 0;
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      .alert-banner {
+        background-color: #fff3cd;
+        padding: 15px 20px;
+        text-align: center;
+        border-bottom: 1px solid #e3e6ec;
+        color: #856404;
+      }
+
+      .alert-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        color: #856404;
+        letter-spacing: -0.02em;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .footer {
+        background: linear-gradient(135deg, #0061f2 0%, #6900c7 100%);
+        padding: 20px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #0061f2;
+        font-weight: 700;
+      }
+
+      .btn-primary {
+        display: inline-block;
+        font-weight: 600;
+        color: #fff;
+        background-color: #0061f2;
+        border: 1px solid #0061f2;
+        padding: 12px 24px;
+        font-size: 16px;
+        line-height: 1.5;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        text-align: center;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: #0052cc;
+        border-color: #0052cc;
+      }
+
+      .text-primary {
+        color: #0061f2;
+      }
+
+      .fw-bold {
+        font-weight: 700;
+      }
+
+      .card {
+        border: 1px solid #e3e6ec;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #fff;
+      }
+
+      .contact-details {
+        background-color: #f8f9fc;
+        border-left: 4px solid #0061f2;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+      }
+
+      .social-links {
+        margin-top: 15px;
+      }
+
+      .social-links a {
+        display: inline-block;
+        margin: 0 5px;
+        color: white;
+        text-decoration: none;
+      }
+
+      .urgent-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        background-color: #dc3545;
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      /* Nuevos estilos para reemplazar los inline styles */
+      .contact-table {
+        width: 100%;
+      }
+
+      .table-label {
+        width: 30%;
+        padding: 5px 0;
+        vertical-align: top;
+      }
+
+      .table-data {
+        padding: 5px 0;
+      }
+
+      .table-data-preformatted {
+        padding: 5px 0;
+        white-space: pre-line;
+      }
+
+      .contact-title {
+        margin-top: 0;
+      }
+
+      .actions-section {
+        margin-top: 30px;
+      }
+
+      .auto-message {
+        margin-top: 30px;
+        font-size: 14px;
+        color: #6c757d;
+      }
+
+      .footer-brand {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: white;
+      }
+
+      .footer-email {
+        margin-bottom: 15px;
+      }
+
+      .footer-email a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .separator {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .footer-copyright {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .copyright-text {
+        margin-bottom: 5px;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+      }
+
+      .footer-link-separator {
+        margin: 0 5px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>HodlWatcher</h1>
+        <p>Notificación de nuevo contacto</p>
+      </div>
+      <!-- Content -->
+      <div class="content">
+        <p>Hola equipo,</p>
+        <p>Se ha recibido un nuevo mensaje a través del formulario de contacto de la web. A continuación los detalles:</p>
+        <div class="contact-details">
+          <h3 class="contact-title">Información del contacto</h3>
+          <table class="contact-table">
+            <tr>
+              <td class="table-label">
+                <strong>Nombre:</strong>
+              </td>
+              <td class="table-data">{{ form.name }}</td>
+            </tr>
+            <tr>
+              <td class="table-label">
+                <strong>Email:</strong>
+              </td>
+              <td class="table-data">
+                <a href="mailto:{{ form.email }}">{{ form.email }}</a>
+              </td>
+            </tr>
+            <tr>
+              <td class="table-label">
+                <strong>Teléfono:</strong>
+              </td>
+              <td class="table-data">{{ form.phone }}</td>
+            </tr>
+            <tr>
+              <td class="table-label">
+                <strong>Asunto:</strong>
+              </td>
+              <td class="table-data">{{ form.subject }}</td>
+            </tr>
+            <tr>
+              <td class="table-label">
+                <strong>Mensaje:</strong>
+              </td>
+              <td class="table-data-preformatted">{{ form.message }}</td>
+            </tr>
+            <tr>
+              <td class="table-label">
+                <strong>Fecha:</strong>
+              </td>
+              <td class="table-data">{% now "DATETIME_FORMAT" %}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="actions-section">
+          <h3>Acciones rápidas:</h3>
+          <p>
+            <a href="mailto:{{ form.email }}?subject=Re: {{ form.subject|urlencode }}"
+               class="btn-primary">Responder al usuario</a>
+          </p>
+        </div>
+        <div class="auto-message">
+          <p>Este mensaje fue generado automáticamente por el sistema de contacto de HodlWatcher.</p>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-brand">
+          <strong>HodlWatcher</strong>
+        </div>
+        <div class="footer-email">
+          <a href="mailto:hodlwatcher@gmail.com">contact@hodlwatcher.com</a>
+        </div>
+        <div class="social-links">
+          <a href="https://x.com/HodlWatcher" aria-label="Twitter">Twitter</a>
+          <span class="separator">|</span>
+          <a href="https://github.com/KrogZetsBit/HodlWatcher_web"
+             aria-label="GitHub">GitHub</a>
+          <span class="separator">|</span>
+          <a href="#" aria-label="Nostr">Nostr</a>
+        </div>
+        <div class="footer-copyright">
+          <div class="copyright-text">© HodlWatcher {% now "Y" %}. Todos los derechos reservados.</div>
+          <div class="footer-links">
+            <a href="#">Privacidad</a>
+            <span class="footer-link-separator">·</span>
+            <a href="#">Términos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

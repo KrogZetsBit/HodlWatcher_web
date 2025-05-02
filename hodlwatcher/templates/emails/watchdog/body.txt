@@ -1,0 +1,23 @@
+Hola {{ watchdog.user.email }},
+
+Hemos encontrado {{ offers|length }} ofertas que coinciden con tu Watchdog para {{ watchdog.asset_code }}/{{ watchdog.currency }}.
+
+Detalles de tu Watchdog:
+- Operación: {{ operation }}
+- Cantidad: {{ watchdog.amount }} {{ watchdog.currency }}
+- Activo: {{ watchdog.asset_code }}
+- Comisión máxima: {{ watchdog.rate_fee }}%
+
+Las mejores ofertas encontradas:
+{% for offer in offers %}
+Oferta #{{ forloop.counter }}:
+- Precio: {{ offer.price|default:"N/A" }} {{ watchdog.currency }}
+- Comisión: {{ fee|last|floatformat:2 }}%
+- Trader: {{ offer.trader.login|default:"Usuario" }} (Operaciones: {{ offer.trader.trades_count|default:"0" }})
+- Enlace: https://hodlhodl.com/offers/{{ offer.id }}
+{% endfor %}
+
+Visita nuestra plataforma para ver más detalles y completar la operación.
+
+Saludos,
+El equipo de tu plataforma

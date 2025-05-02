@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% load i18n static %}
+{% load crispy_forms_tags allauth %}
+
+{% block description %}
+  Manage your HodlWatcher user profile. Update personal information, connect or manage Telegram for alerts, change password, configure MFA (Authenticator App, Recovery Codes, Security Keys), view alert history, and manage account settings.
+{% endblock description %}
+{% block keywords %}
+  HodlWatcher Profile, Account Settings, Manage Account, User Profile, Update Profile, Telegram Settings, Telegram Alerts, HodlWatcher Bot, Change Password, Security Settings, MFA, Multi-Factor Authentication, TOTP, Authenticator App, Recovery Codes, Security Keys, WebAuthn, Alert History, Delete Account
+{% endblock keywords %}
+{% block title %}
+  {% trans "Profile" %}
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">{% trans "Profile" %}</span>
+      </h1>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-11 col-xl-9 col-xxl-8">
+        <!-- Sección de Información del Usuario -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-person-circle"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Profile Info" %}</span>
+                </h3>
+              </div>
+              <div class="row">
+                <div class="col-md-4 text-center">
+                  {% if object.image.url %}
+                    <img src="{{ object.image.url }}"
+                         alt="Profile"
+                         class="img-fluid rounded-circle"
+                         width="120" />
+                  {% else %}
+                    <img src="{% static 'assets/profile.png' %}"
+                         alt="Profile"
+                         class="img-fluid rounded-circle"
+                         width="120" />
+                  {% endif %}
+                </div>
+                <div class="col-md-8">
+                  <p>
+                    <strong>{% trans "Full Name" %}:</strong> {{ user.first_name }} {{ user.last_name }}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {{ user.email }}
+                  </p>
+                  <p>
+                    <strong>{% trans "Username" %}:</strong> {{ user.username }}
+                  </p>
+                  <!-- Formulario para actualizar perfil -->
+                  <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary">{% trans "Update Profile" %}</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Sección de Telegram -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-telegram"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Telegram configuration" %}</span>
+                </h3>
+              </div>
+              <div class="card-body">
+                {% if user.configuracion.user_telegram %}
+                  <p>
+                    <strong>{% trans "User" %}:</strong> {{ user.configuracion.user_telegram.username }}
+                    <br />
+                    <strong>{% trans "Watchdog alert status" %}:</strong>
+                    {% if user.configuracion.user_telegram.recibir_alertas_watchdog %}
+                      <span class="badge bg-success">{% trans "Activated" %}</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{% trans "Deactivated" %}</span>
+                    {% endif %}
+                  </p>
+                  <p class="mb-0">
+                    <strong>📋 {% trans "Available commands" %}:</strong>
+                    <br />
+                    <code>/start</code> - {% trans "Register" %}
+                    <br />
+                    <code>/ratefee</code> - {% trans "Consult or modify the configured rate fees" %}
+                    <br />
+                    <code>/watchdog on|off</code> - {% trans "Activate or deactivate all watchdogs alerts" %}
+                    <br />
+                    <code>/miswatchdogs</code> - {% trans "List your configured watchdogs" %}
+                    <br />
+                    <code>/togglewatchdog [{% trans "number" %}]</code> - {% trans "Activates/deactivates a specific watchdog" %}
+                    <br />
+                    <code>/estado</code> - {% trans "View the current status of your alerts and rate fees" %}
+                    <br />
+                    <code>/alerta</code> - {% trans "Send an alert with your configured rate fees" %}
+                    <br />
+                    <code>/help</code> - {% trans "Show this help message" %}
+                  </p>
+                  <div class="text-center mt-3">
+                    <form method="post" action="{% url 'unlink_telegram' %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger btn-sm">{% trans "Unlink Telegram" %}</button>
+                    </form>
+                  </div>
+                {% else %}
+                  <p>{% trans "You do not have Telegram connected to your account." %}</p>
+                  <p>{% trans "To connect" %}:</p>
+                  <ol>
+                    <li>
+                      {% trans "Search for our bot on Telegram" %}: <code>@HodlWatcher_bot</code>
+                    </li>
+                    <li>
+                      {% trans "Send the command" %} <code>/start</code>
+                    </li>
+                    <li>{% trans "Go to the account link page" %}</li>
+                  </ol>
+                  <a href="{% url 'link_telegram' %}" class="btn btn-primary">{% trans "Link account" %}</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Sección de Cambio de Contraseña -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-key"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% trans "Change Password" %}</span>
+                </h3>
+              </div>
+              <a href="{% url 'account_change_password' %}" class="btn btn-primary">{% trans "Change Password" %}</a>
+            </div>
+          </div>
+        </section>
+        <!-- TOTP Section -->
+        {% if "totp" in MFA_SUPPORTED_TYPES %}
+          <section>
+            <div class="card shadow border-0 rounded-4 mb-5">
+              <div class="card-body p-5">
+                <div class="d-flex align-items-center mb-4">
+                  <div class="feature bg-primary text-white rounded-3 me-3">
+                    <i class="bi bi-phone"></i>
+                  </div>
+                  <h3 class="fw-bolder mb-0">
+                    <span class="text-gradient d-inline">{% translate "Authenticator App" %}</span>
+                  </h3>
+                </div>
+                <div class="mb-4">
+                  {% if authenticators.totp %}
+                    <p class="text-success">
+                      <i class="bi bi-check-circle-fill"></i> {% translate "Authentication using an authenticator app is active." %}
+                    </p>
+                  {% else %}
+                    <p class="text-warning">
+                      <i class="bi bi-exclamation-triangle-fill"></i> {% translate "An authenticator app is not active." %}
+                    </p>
+                  {% endif %}
+                </div>
+                <div class="d-grid gap-2 d-md-flex">
+                  {% url 'mfa_deactivate_totp' as deactivate_url %}
+                  {% url 'mfa_activate_totp' as activate_url %}
+                  {% if authenticators.totp %}
+                    <a href="{{ deactivate_url }}" class="btn btn-danger me-md-2">
+                      <i class="bi bi-x-circle"></i> {% translate "Deactivate" %}
+                    </a>
+                  {% else %}
+                    <a href="{{ activate_url }}" class="btn btn-primary me-md-2">
+                      <i class="bi bi-check-circle"></i> {% translate "Activate" %}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </section>
+        {% endif %}
+        <!-- Recovery Codes Section -->
+        {% if "recovery_codes" in MFA_SUPPORTED_TYPES %}
+          {% with total_count=authenticators.recovery_codes.generate_codes|length unused_count=authenticators.recovery_codes.get_unused_codes|length %}
+            <section>
+              <div class="card shadow border-0 rounded-4 mb-5">
+                <div class="card-body p-5">
+                  <div class="d-flex align-items-center mb-4">
+                    <div class="feature bg-primary text-white rounded-3 me-3">
+                      <i class="bi bi-file-earmark-lock2"></i>
+                    </div>
+                    <h3 class="fw-bolder mb-0">
+                      <span class="text-gradient d-inline">{% translate "Recovery Codes" %}</span>
+                    </h3>
+                  </div>
+                  <div class="mb-4">
+                    {% if authenticators.recovery_codes %}
+                      <p class="{% if unused_count > 0 %}text-success{% else %}text-warning{% endif %}">
+                        <i class="bi {% if unused_count > 0 %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %}"></i>
+                        {% blocktranslate count unused_count=unused_count %}There is {{ unused_count }} out of {{ total_count }} recovery codes available.{% plural %}There are {{ unused_count }} out of {{ total_count }} recovery codes available.{% endblocktranslate %}
+                      </p>
+                    {% else %}
+                      <p class="text-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i> {% translate "No recovery codes set up." %}
+                      </p>
+                    {% endif %}
+                  </div>
+                  <div class="d-grid gap-2 d-md-flex">
+                    {% if is_mfa_enabled %}
+                      {% if authenticators.recovery_codes and unused_count > 0 %}
+                        {% url 'mfa_view_recovery_codes' as view_url %}
+                        <a href="{{ view_url }}" class="btn btn-primary me-md-2">
+                          <i class="bi bi-eye"></i> {% translate "View" %}
+                        </a>
+                        {% url 'mfa_download_recovery_codes' as download_url %}
+                        <a href="{{ download_url }}" class="btn btn-secondary me-md-2">
+                          <i class="bi bi-download"></i> {% translate "Download" %}
+                        </a>
+                      {% endif %}
+                      {% url 'mfa_generate_recovery_codes' as generate_url %}
+                      <a href="{{ generate_url }}" class="btn btn-secondary me-md-2">
+                        <i class="bi bi-arrow-repeat"></i> {% translate "Generate" %}
+                      </a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </section>
+          {% endwith %}
+        {% endif %}
+        <!-- WebAuthn Section -->
+        {% if "webauthn" in MFA_SUPPORTED_TYPES %}
+          <section>
+            <div class="card shadow border-0 rounded-4 mb-5">
+              <div class="card-body p-5">
+                <div class="d-flex align-items-center mb-4">
+                  <div class="feature bg-primary text-white rounded-3 me-3">
+                    <i class="bi bi-key-fill"></i>
+                  </div>
+                  <h3 class="fw-bolder mb-0">
+                    <span class="text-gradient d-inline">{% translate "Security Keys" %}</span>
+                  </h3>
+                </div>
+                <div class="mb-4">
+                  {% if authenticators.webauthn|length %}
+                    <p class="text-success">
+                      <i class="bi bi-check-circle-fill"></i>
+                      {% blocktranslate count count=authenticators.webauthn|length %}You have added {{ count }} security key.{% plural %}You have added {{ count }} security keys.{% endblocktranslate %}
+                    </p>
+                  {% else %}
+                    <p class="text-warning">
+                      <i class="bi bi-exclamation-triangle-fill"></i> {% translate "No security keys have been added." %}
+                    </p>
+                  {% endif %}
+                </div>
+                <div class="d-grid gap-2 d-md-flex">
+                  {% if authenticators.webauthn|length %}
+                    {% url 'mfa_list_webauthn' as webauthn_list_url %}
+                    <a href="{{ webauthn_list_url }}" class="btn btn-primary me-md-2">
+                      <i class="bi bi-gear"></i> {% translate "Manage" %}
+                    </a>
+                  {% else %}
+                    {% url 'mfa_add_webauthn' as webauthn_add_url %}
+                    <a href="{{ webauthn_add_url }}" class="btn btn-primary me-md-2">
+                      <i class="bi bi-plus-circle"></i> {% translate "Add" %}
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </section>
+        {% endif %}
+        <!-- Sección de Eliminación de Cuenta -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-trash"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">Delete Account</span>
+                </h3>
+              </div>
+              <p class="text-danger">⚠️ Warning: This action cannot be undone!</p>
+              <button type="button"
+                      class="btn btn-danger"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteAccountModal">Delete Account</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <!-- Modal de confirmación para eliminar cuenta -->
+  <div class="modal fade"
+       id="deleteAccountModal"
+       tabindex="-1"
+       aria-labelledby="deleteAccountModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-header border-0 bg-danger bg-opacity-10">
+          <div class="d-flex align-items-center">
+            <div class="feature bg-danger text-white rounded-3 me-3">
+              <i class="bi bi-exclamation-octagon-fill"></i>
+            </div>
+            <h5 class="fw-bolder mb-0" id="deleteAccountModalLabel">Eliminar cuenta</h5>
+          </div>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Advertencia:</strong> Esta acción no se puede deshacer.
+          </div>
+          <p>Al eliminar tu cuenta:</p>
+          <ul>
+            <li>Se eliminarán todos tus watchdogs configurados</li>
+            <li>Perderás acceso a todo tu historial</li>
+            <li>Tu información será eliminada permanentemente</li>
+          </ul>
+          <p class="mb-0">¿Estás seguro de que deseas continuar?</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light rounded-3" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+          </button>
+          <a href="{% url 'delete_account' %}" class="btn btn-danger rounded-3">
+            <i class="bi bi-trash me-1"></i> Eliminar definitivamente
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

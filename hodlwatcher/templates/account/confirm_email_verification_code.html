@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load allauth account %}
+
+{% block title %}
+  {% translate "Email Verification" %} | HodlWatcher
+{% endblock title %}
+{% block content %}
+  <div class="container px-5 my-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bolder mb-0">
+        <span class="text-gradient d-inline">{% translate "Email Verification" %}</span>
+      </h1>
+    </div>
+    <div class="row gx-5 justify-content-center">
+      <div class="col-lg-11 col-xl-9 col-xxl-8">
+        <!-- Verification Code Section -->
+        <section>
+          <div class="card shadow border-0 rounded-4 mb-5">
+            <div class="card-body p-5">
+              <div class="d-flex align-items-center mb-4">
+                <div class="feature bg-primary text-white rounded-3 me-3">
+                  <i class="bi bi-envelope-check"></i>
+                </div>
+                <h3 class="fw-bolder mb-0">
+                  <span class="text-gradient d-inline">{% translate "Enter Verification Code" %}</span>
+                </h3>
+              </div>
+              <div class="mb-4 text-center">
+                <p>{% translate "We've sent a verification code to:" %}</p>
+                <p class="h5">
+                  <a href="mailto:{{ email }}" class="text-primary">{{ email }}</a>
+                </p>
+              </div>
+              <form method="post"
+                    action="{% url 'account_email_verification_sent' %}"
+                    class="mb-4">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary w-100 mt-3">{% translate "Verify Email" %}</button>
+              </form>
+              <div class="text-center">
+                <p class="text-muted">
+                  {% translate "Didn't receive the code?" %}
+                  <a href="{{ request.path }}" class="text-primary">{% translate "Resend code" %}</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

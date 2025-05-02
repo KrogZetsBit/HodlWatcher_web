@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HodlWatcher - Confirmación de contacto</title>
+    <style>
+      /* Estilos base */
+      body {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      }
+
+      .header {
+        background: linear-gradient(135deg, #0061f2 0%, #6900c7 100%);
+        padding: 24px;
+        text-align: center;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 32px;
+        margin: 0;
+        color: white;
+        text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+        letter-spacing: 0.5px;
+      }
+
+      .header p {
+        margin: 10px 0 0;
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      .alert-banner {
+        background-color: white;
+        padding: 15px 20px;
+        text-align: center;
+        border-bottom: 1px solid #e3e6ec;
+      }
+
+      .alert-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+        color: #0061f2;
+        letter-spacing: -0.02em;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .footer {
+        background: linear-gradient(135deg, #0061f2 0%, #6900c7 100%);
+        padding: 20px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #0061f2;
+        font-weight: 700;
+      }
+
+      .btn-primary {
+        display: inline-block;
+        font-weight: 600;
+        color: #fff;
+        background-color: #0061f2;
+        border: 1px solid #0061f2;
+        padding: 12px 24px;
+        font-size: 16px;
+        line-height: 1.5;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        text-align: center;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+      }
+
+      .btn-primary:hover {
+        background-color: #0052cc;
+        border-color: #0052cc;
+      }
+
+      .text-primary {
+        color: #0061f2;
+      }
+
+      .fw-bold {
+        font-weight: 700;
+      }
+
+      .card {
+        border: 1px solid #e3e6ec;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #fff;
+      }
+
+      .offer-item {
+        border-left: 4px solid #0061f2;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #f8f9fc;
+        border-radius: 6px;
+      }
+
+      .social-links {
+        margin-top: 15px;
+      }
+
+      .social-links a {
+        display: inline-block;
+        margin: 0 5px;
+        color: white;
+        text-decoration: none;
+      }
+
+      .check-icon {
+        color: #28a745;
+        font-size: 48px;
+        margin: 20px 0;
+      }
+
+      /* Nuevos estilos para reemplazar los inline styles */
+      .text-center {
+        text-align: center;
+      }
+
+      .no-top-margin {
+        margin-top: 0;
+      }
+
+      .list-standard {
+        padding-left: 20px;
+      }
+
+      .link-primary {
+        color: #0061f2;
+      }
+
+      .margin-vertical-large {
+        margin: 30px 0;
+      }
+
+      .footer-brand {
+        font-size: 16px;
+        margin-bottom: 10px;
+        color: white;
+      }
+
+      .footer-email {
+        margin-bottom: 15px;
+      }
+
+      .footer-email a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .separator {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .footer-copyright {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .copyright-text {
+        margin-bottom: 5px;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+      }
+
+      .footer-link-separator {
+        margin: 0 5px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>HodlWatcher</h1>
+        <p>Tu vigilante para comprar o vender en HodlHodl</p>
+      </div>
+      <!-- Alert Title -->
+      <div class="alert-banner">
+        <h2 class="alert-title">¡Mensaje enviado con éxito!</h2>
+      </div>
+      <!-- Content -->
+      <div class="content">
+        <div class="text-center">
+          <div class="check-icon">✓</div>
+          <h2 class="no-top-margin">Gracias por contactarnos</h2>
+        </div>
+        <p>
+          Hemos recibido correctamente tu mensaje enviado a <strong>contact@hodlwatcher.com</strong> y nuestro equipo lo revisará lo antes posible.
+        </p>
+        <div class="card">
+          <h3 class="no-top-margin">¿Qué sucede ahora?</h3>
+          <ul class="list-standard">
+            <li>Hemos registrado tu consulta en nuestro sistema</li>
+            <li>Nuestro equipo te responderá en un plazo máximo de 48 horas</li>
+            <li>Recibirás nuestra respuesta al correo electrónico que nos proporcionaste</li>
+          </ul>
+        </div>
+        <p>
+          Si necesitas ayuda inmediata, puedes consultar nuestras <a href="https://hodlwatcher.com/faq/" class="link-primary">preguntas frecuentes</a> donde encontrarás respuestas a las consultas más comunes.
+        </p>
+        <div class="text-center margin-vertical-large">
+          <a href="https://hodlwatcher.com" class="btn-primary">Volver a HodlWatcher</a>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="footer">
+        <div class="footer-brand">
+          <strong>HodlWatcher</strong>
+        </div>
+        <div class="footer-email">
+          <a href="mailto:hodlwatcher@gmail.com">contact@hodlwatcher.com</a>
+        </div>
+        <div class="social-links">
+          <a href="https://x.com/HodlWatcher" aria-label="Twitter">Twitter</a>
+          <span class="separator">|</span>
+          <a href="https://github.com/KrogZetsBit/HodlWatcher_web"
+             aria-label="GitHub">GitHub</a>
+          <span class="separator">|</span>
+          <a href="#" aria-label="Nostr">Nostr</a>
+        </div>
+        <div class="footer-copyright">
+          <div class="copyright-text">© HodlWatcher {% now "Y" %}. Todos los derechos reservados.</div>
+          <div class="footer-links">
+            <a href="#">Privacidad</a>
+            <span class="footer-link-separator">·</span>
+            <a href="#">Términos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
