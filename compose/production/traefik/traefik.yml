@@ -31,7 +31,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: 'Host(`772nltlmpbh3ajuxhc5tpsnixf5zicin5jgoj5qxbo5vjaad34kuepid.onion`) || Host(`772nltlmpbh3ajuxhc5tpsnixf5zicin5jgoj5qxbo5vjaad34kuepid.onion`)'
+      rule: 'Host(`pd25ggldit7tsmxobywx4tblydhldh4iyhongdf4wby3rderx37t6sid.onion`) || Host(`pd25ggldit7tsmxobywx4tblydhldh4iyhongdf4wby3rderx37t6sid.onion`)'
       entryPoints:
         - web-secure
       middlewares:
@@ -42,7 +42,7 @@ http:
         certResolver: letsencrypt
 
     flower-secure-router:
-      rule: 'Host(`772nltlmpbh3ajuxhc5tpsnixf5zicin5jgoj5qxbo5vjaad34kuepid.onion`)'
+      rule: 'Host(`pd25ggldit7tsmxobywx4tblydhldh4iyhongdf4wby3rderx37t6sid.onion`)'
       entryPoints:
         - flower
       service: flower
