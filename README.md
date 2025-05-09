@@ -1,5 +1,6 @@
 # HodlWatcher Web 🚀🐶
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/KrogZetsBit/HodlWatcher_web)
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/YOUR_USERNAME/hodlwatcher) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ## Description
