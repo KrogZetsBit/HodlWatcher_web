@@ -61,7 +61,9 @@ def extract_payment_methods():
         list: Lista de métodos de pago con id, type y name.
     """
 
-    json_data = requests.get("https://hodlhodl.com/api/v1/payment_methods", timeout=6).json()
+    json_data = requests.get(
+        "https://hodlhodl.com/api/v1/payment_methods", timeout=6
+    ).json()
     # Si se pasa un string, convertir a diccionario
     if isinstance(json_data, str):
         json_data = json.loads(json_data)
@@ -76,7 +78,14 @@ def extract_payment_methods():
         for method in json_data.get("payment_methods", [])
     ]
 
-    return sorted(extracted_methods, key=lambda x: x["name"])
+    # Añadir opción "Todos los métodos" o similar
+    empty_method = {
+        "id": "",
+        "type": "",
+        "name": "-- Seleccionar método --",  # o "Todos los métodos"
+    }
+
+    return [empty_method] + sorted(extracted_methods, key=lambda x: x["name"])
 
 
 def extract_currencies():
@@ -99,7 +108,8 @@ def extract_currencies():
 
     # Extraer las monedas
     extracted_currencies = [
-        {"code": method.get("code", ""), "name": method.get("name", "")} for method in json_data.get("currencies", [])
+        {"code": method.get("code", ""), "name": method.get("name", "")}
+        for method in json_data.get("currencies", [])
     ]
 
     return sorted(extracted_currencies, key=lambda x: x["name"])
@@ -129,11 +139,17 @@ def get_matching_offers(watchdog):
 
     # Realizar solicitud a la API
     try:
-        response = requests.get("https://hodlhodl.com/api/v1/offers", params=params, timeout=6)
+        response = requests.get(
+            "https://hodlhodl.com/api/v1/offers", params=params, timeout=6
+        )
         response.raise_for_status()
         data = response.json()
         # Filtrar ofertas por número de operaciones del trader (al menos 1)
-        offers = [offer for offer in data.get("offers", []) if offer.get("trader", {}).get("trades_count", 0) >= 1]
+        offers = [
+            offer
+            for offer in data.get("offers", [])
+            if offer.get("trader", {}).get("trades_count", 0) >= 1
+        ]
 
         # Aplicar el filtro de rate_fee
         fee_threshold = 100  # Define a constant for the magic value
@@ -152,7 +168,11 @@ def get_matching_offers(watchdog):
 
                 # Calcular el fee máximo permitido para este watchdog
                 real_fee = offer_price / real_price * fee_threshold
-                fee = float(real_fee - fee_threshold) if real_fee > fee_threshold else float(fee_threshold - real_fee)
+                fee = (
+                    float(real_fee - fee_threshold)
+                    if real_fee > fee_threshold
+                    else float(fee_threshold - real_fee)
+                )
                 # Verificar si el fee de la oferta es menor o igual al máximo permitido
                 if fee <= watchdog.rate_fee:
                     filtered_offers.append(offer)
@@ -184,7 +204,9 @@ def process_watchdog(watchdog):
         if matching_offers:
             new_offers = filter_new_offers(watchdog, matching_offers["Filtered_offers"])
             if new_offers:
-                send_watchdog_notification(watchdog, new_offers, matching_offers["Filtered_fees"])
+                send_watchdog_notification(
+                    watchdog, new_offers, matching_offers["Filtered_fees"]
+                )
                 logger.info(
                     logger.info(
                         "Notificación enviada para watchdog %s. Se encontraron %s nuevas ofertas",
@@ -193,7 +215,9 @@ def process_watchdog(watchdog):
                     )
                 )
             else:
-                logger.debug("No hay nuevas ofertas para notificar en watchdog %s", watchdog.id)
+                logger.debug(
+                    "No hay nuevas ofertas para notificar en watchdog %s", watchdog.id
+                )
         else:
             logger.debug("No se encontraron ofertas para watchdog %s", watchdog.id)
 
@@ -209,7 +233,12 @@ def filter_new_offers(watchdog, offers):
     new_offers = []
     for offer in offers:
         offer_id = offer.get("id")
-        if offer_id and not WatchdogNotification.objects.filter(watchdog=watchdog, offer_id=offer_id).exists():
+        if (
+            offer_id
+            and not WatchdogNotification.objects.filter(
+                watchdog=watchdog, offer_id=offer_id
+            ).exists()
+        ):
             new_offers.append(offer)
             WatchdogNotification.objects.create(watchdog=watchdog, offer_id=offer_id)
     return new_offers
@@ -242,7 +271,11 @@ async def enviar_alerta_watchdog(investment_watchdog, mensaje):
                 app = Application.builder().token(token).build()
 
                 # Construir el mensaje de alerta
-                condicion = "por encima de" if investment_watchdog.condicion == "above" else "por debajo de"
+                condicion = (
+                    "por encima de"
+                    if investment_watchdog.condicion == "above"
+                    else "por debajo de"
+                )
                 alert_message = (
                     f"🚨 *ALERTA DE WATCHDOG* 🚨\n\n"
                     f"*{investment_watchdog.nombre}*\n"
@@ -296,7 +329,9 @@ async def enviar_alerta_prueba(chat_id):
 
         # Enviar el mensaje
         async with app:
-            await app.bot.send_message(chat_id=chat_id, text=test_message, parse_mode="Markdown")
+            await app.bot.send_message(
+                chat_id=chat_id, text=test_message, parse_mode="Markdown"
+            )
 
     except Exception:
         logger.exception("Error al enviar alerta de prueba")

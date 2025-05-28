@@ -11973,3 +11973,17 @@ html {
 .rounded-circle:hover .bi-nostr-logo {
   filter: invert(1);
 }
+
+.btn-bitcoin-info {
+  background-color: #f7931a;
+  border-color: #f7931a;
+  color: white;
+  cursor: default;
+  pointer-events: none;
+}
+
+.bitcoin-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}

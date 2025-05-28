@@ -1,7 +1,11 @@
 from django.contrib import admin
 
-from .models import Configuracion
-from .models import UsuarioTelegram
+from .models import (
+    Configuracion,
+    InvestmentWatchdog,
+    UsuarioTelegram,
+    WatchdogNotification,
+)
 
 
 @admin.register(UsuarioTelegram)
@@ -28,6 +32,53 @@ class ConfiguracionAdmin(admin.ModelAdmin):
                     "user",
                     "user_telegram",
                     "image",
+                )
+            },
+        ),
+    )
+
+
+@admin.register(InvestmentWatchdog)
+class InvestmentWatchdogAdmin(admin.ModelAdmin):
+    list_display = ["user", "currency", "side", "amount", "created_at"]
+    search_fields = ["user__username", "currency"]
+    list_filter = ["side", "currency"]
+    ordering = ["-created_at"]
+    list_per_page = 50
+    list_max_show_all = 100
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "user",
+                    "currency",
+                    "side",
+                    "amount",
+                    "active",
+                )
+            },
+        ),
+    )
+
+
+@admin.register(WatchdogNotification)
+class WatchdogNotificationAdmin(admin.ModelAdmin):
+    list_display = ["watchdog", "offer_id", "notified_at", "is_active"]
+    search_fields = ["watchdog__user__username", "offer_id"]
+    list_filter = ["notified_at"]
+    ordering = ["-notified_at"]
+    list_per_page = 50
+    list_max_show_all = 100
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "watchdog",
+                    "offer_id",
+                    "notified_at",
+                    "is_active",
                 )
             },
         ),

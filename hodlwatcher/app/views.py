@@ -62,7 +62,9 @@ class ContactView(CreateView):
 
         send_contact_confirmation_email(form.cleaned_data)
 
-        messages.success(self.request, _("Thank you for your message! We'll get back to you soon."))
+        messages.success(
+            self.request, _("Thank you for your message! We'll get back to you soon.")
+        )
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -81,15 +83,21 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         try:
-            usuario_telegram = UsuarioTelegram.objects.filter(username=self.request.user.username).first()
+            usuario_telegram = UsuarioTelegram.objects.filter(
+                username=self.request.user.username
+            ).first()
 
             configuracion, _ = Configuracion.objects.get_or_create(
                 user=self.request.user,
-                defaults={"user_telegram": usuario_telegram if usuario_telegram else None},
+                defaults={
+                    "user_telegram": usuario_telegram if usuario_telegram else None
+                },
             )
         except UsuarioTelegram.DoesNotExist:
             # Si no se encuentra usuario de Telegram, crea configuración sin él
-            configuracion, _ = Configuracion.objects.get_or_create(user=self.request.user)
+            configuracion, _ = Configuracion.objects.get_or_create(
+                user=self.request.user
+            )
             return configuracion
         else:
             return configuracion
@@ -106,7 +114,9 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.user = self.request.user
 
         try:
-            usuario_telegram = UsuarioTelegram.objects.filter(username=self.request.user.username).first()
+            usuario_telegram = UsuarioTelegram.objects.filter(
+                username=self.request.user.username
+            ).first()
             if usuario_telegram:
                 form.instance.user_telegram = usuario_telegram
         except UsuarioTelegram.DoesNotExist:
@@ -276,8 +286,14 @@ class BuscadorView(TemplateView):
                 prices_array = np.array(prices)
                 mean = np.mean(prices_array)
                 std = np.std(prices_array)
-                filtered_prices = [p for p in prices if mean - 2 * std <= p <= mean + 2 * std]
-                return sum(filtered_prices) / len(filtered_prices) if filtered_prices else None
+                filtered_prices = [
+                    p for p in prices if mean - 2 * std <= p <= mean + 2 * std
+                ]
+                return (
+                    sum(filtered_prices) / len(filtered_prices)
+                    if filtered_prices
+                    else None
+                )
             except ZeroDivisionError:
                 return sum(prices) / len(prices) if prices else None
         return None
@@ -291,14 +307,20 @@ class BuscadorView(TemplateView):
         for offer in offers:
             try:
                 offer_price = float(offer.get("price", 0))
-                percent_deviation = ((offer_price - average_price) / average_price) * 100
+                percent_deviation = (
+                    (offer_price - average_price) / average_price
+                ) * 100
                 offer["percent_deviation"] = round(percent_deviation, 2)
             except (TypeError, ValueError, KeyError):
                 offer["percent_deviation"] = None
                 logger.info("Error calculando desviación")
             processed_offers.append(offer)
 
-        return processed_offers if processed_offers else [{"error": _("No valid offers processed")}]
+        return (
+            processed_offers
+            if processed_offers
+            else [{"error": _("No valid offers processed")}]
+        )
 
     def cached_payment_methods(self):
         """Obtiene los métodos de pago con cache"""
@@ -341,14 +363,16 @@ class BuscadorView(TemplateView):
 
         params = {
             "side": self.request.GET.get("side", "sell"),
-            "payment_method_id": self.request.GET.get("payment_method_id", "52"),
             "asset_code": "BTC",
             "currency_code": self.request.GET.get("currency_code", "EUR"),
             "amount": self.request.GET.get("amount", ""),
         }
 
-        context["form_data"] = params
+        payment_method_id = self.request.GET.get("payment_method_id", "")
+        if payment_method_id:
+            params["payment_method_id"] = payment_method_id
 
+        context["form_data"] = params
         try:
             # Obtener precio promedio (con cache)
             average_price = self.get_average_price(params["currency_code"])
@@ -370,16 +394,22 @@ class BuscadorView(TemplateView):
             no_trades = self.request.GET.get("new_user")
             if no_trades:
                 offers = [
-                    offer for offer in data.get("offers", []) if offer.get("trader", {}).get("trades_count", 0) >= 0
+                    offer
+                    for offer in data.get("offers", [])
+                    if offer.get("trader", {}).get("trades_count", 0) >= 0
                 ]
             else:
                 offers = [
-                    offer for offer in data.get("offers", []) if offer.get("trader", {}).get("trades_count", 0) >= 1
+                    offer
+                    for offer in data.get("offers", [])
+                    if offer.get("trader", {}).get("trades_count", 0) >= 1
                 ]
             context["no_trades"] = no_trades
             offers = self.calculate_price_deviation(offers, average_price)
             if params["side"] == "buy":
-                context["offers"] = sorted(offers, key=lambda x: x["percent_deviation"], reverse=True)
+                context["offers"] = sorted(
+                    offers, key=lambda x: x["percent_deviation"], reverse=True
+                )
             else:
                 context["offers"] = offers
             context["meta"] = data.get("meta", {})
@@ -414,7 +444,9 @@ class WatchdogListView(LoginRequiredMixin, ListView):
         payment_methods = cache.get("payment_methods") or []
 
         # Crear un diccionario para búsqueda rápida por ID
-        payment_methods_dict = {method["id"]: method["name"] for method in payment_methods}
+        payment_methods_dict = {
+            method["id"]: method["name"] for method in payment_methods
+        }
         context["payment_methods_dict"] = payment_methods_dict
 
         return context
@@ -437,7 +469,9 @@ class WatchdogCreateView(LoginRequiredMixin, CreateView):
         except Configuracion.DoesNotExist:
             # Si no existe configuración, intentar buscar directamente el usuario_telegram
             try:
-                usuario_telegram = UsuarioTelegram.objects.filter(username=self.request.user.username).first()
+                usuario_telegram = UsuarioTelegram.objects.filter(
+                    username=self.request.user.username
+                ).first()
                 kwargs["usuario_telegram"] = usuario_telegram
             except UsuarioTelegram.DoesNotExist:
                 pass
@@ -471,7 +505,9 @@ class WatchdogCreateView(LoginRequiredMixin, CreateView):
                     {"code": "EUR", "name": "Euros"},
                     {"code": "USD", "name": "Dólar Americano"},
                 ],
-                "current_count": self.request.user.watchdogs.filter(active=True).count(),
+                "current_count": self.request.user.watchdogs.filter(
+                    active=True
+                ).count(),
                 "max_watchdogs": config.MAX_WATCHDOGS,
             }
         )
@@ -479,13 +515,23 @@ class WatchdogCreateView(LoginRequiredMixin, CreateView):
         # Preparar datos para el resumen
         form = context["form"]
         summary_data = {
-            "side": dict(InvestmentWatchdog.SIDE_CHOICES).get(form["side"].value(), "sell"),
+            "side": dict(InvestmentWatchdog.SIDE_CHOICES).get(
+                form["side"].value(), "sell"
+            ),
             "currency": next(
-                (c["name"] for c in context["currencies"] if c["code"] == form["currency"].value()),
+                (
+                    c["name"]
+                    for c in context["currencies"]
+                    if c["code"] == form["currency"].value()
+                ),
                 "EUR",
             ),
             "payment_method": next(
-                (p["name"] for p in context["payment_methods"] if p["code"] == form["payment_method_id"].value()),
+                (
+                    p["name"]
+                    for p in context["payment_methods"]
+                    if p["code"] == form["payment_method_id"].value()
+                ),
                 "Transferencia SEPA",
             ),
             "asset": "Bitcoin",
@@ -503,7 +549,10 @@ class WatchdogCreateView(LoginRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            if request.user.watchdogs.filter(active=True).count() >= config.MAX_WATCHDOGS:
+            if (
+                request.user.watchdogs.filter(active=True).count()
+                >= config.MAX_WATCHDOGS
+            ):
                 messages.error(
                     request,
                     _(
@@ -542,7 +591,9 @@ class WatchdogActivateView(LoginRequiredMixin, View):
         except InvestmentWatchdog.DoesNotExist:
             messages.error(
                 request,
-                _("The watchdog does not exist or you do not have permission to activate it."),
+                _(
+                    "The watchdog does not exist or you do not have permission to activate it."
+                ),
             )
 
         return redirect("watchdogs_list")
@@ -563,7 +614,9 @@ class WatchdogDeactivateView(LoginRequiredMixin, View):
         except InvestmentWatchdog.DoesNotExist:
             messages.error(
                 request,
-                _("The watchdog does not exist or you do not have permission to disable it."),
+                _(
+                    "The watchdog does not exist or you do not have permission to disable it."
+                ),
             )
 
         return redirect("watchdogs_list")
@@ -587,7 +640,9 @@ class DeleteWatchdogView(LoginRequiredMixin, DeleteView):
 
     def get(self, request, *args, **kwargs):
         # Redirigir a la lista de watchdogs si se intenta acceder directamente a la URL
-        messages.warning(self.request, _("Please use the delete button from the watchdogs list."))
+        messages.warning(
+            self.request, _("Please use the delete button from the watchdogs list.")
+        )
         return redirect("watchdogs_list")
 
 
@@ -605,7 +660,9 @@ class LinkTelegramView(LoginRequiredMixin, FormView):
             user_telegram = UsuarioTelegram.objects.get(username=username)
 
             # Verificar si ya está vinculado a otro usuario
-            existing_config = Configuracion.objects.filter(user_telegram=user_telegram).first()
+            existing_config = Configuracion.objects.filter(
+                user_telegram=user_telegram
+            ).first()
             if existing_config and existing_config.user != self.request.user:
                 messages.error(
                     self.request,
@@ -614,7 +671,9 @@ class LinkTelegramView(LoginRequiredMixin, FormView):
                 return redirect("link_telegram")
 
             # Actualizar la configuración del usuario
-            config, created = Configuracion.objects.get_or_create(user=self.request.user)
+            config, created = Configuracion.objects.get_or_create(
+                user=self.request.user
+            )
             config.user_telegram = user_telegram
             config.save()
 
@@ -623,7 +682,9 @@ class LinkTelegramView(LoginRequiredMixin, FormView):
         except UsuarioTelegram.DoesNotExist:
             messages.error(
                 self.request,
-                _("No Telegram user with that name was found. Please make sure you have started our bot with /start."),
+                _(
+                    "No Telegram user with that name was found. Please make sure you have started our bot with /start."
+                ),
             )
             return redirect("link_telegram")
 
@@ -640,9 +701,13 @@ class UnlinkTelegramView(LoginRequiredMixin, View):
                 # Solo desvinculamos, no eliminamos el usuario de Telegram
                 configuracion.user_telegram = None
                 configuracion.save()
-                messages.success(request, _("Your Telegram account has been successfully unlinked."))
+                messages.success(
+                    request, _("Your Telegram account has been successfully unlinked.")
+                )
             else:
-                messages.info(request, _("You didn't have any linked Telegram accounts."))
+                messages.info(
+                    request, _("You didn't have any linked Telegram accounts.")
+                )
         except Configuracion.DoesNotExist:
             messages.error(request, _("Your configuration was not found."))
 

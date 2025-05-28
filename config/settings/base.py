@@ -349,7 +349,7 @@ SOCIALACCOUNT_FORMS = {"signup": "hodlwatcher.users.forms.UserSocialSignupForm"}
 MFA_ENABLED = True  # Habilitar la autenticación de dos factores
 
 # Habilitar tipos de MFA disponibles
-MFA_SUPPORTED_TYPES = ["totp", "webauthn", "recovery_codes"]  # Tipos de MFA disponibles
+MFA_SUPPORTED_TYPES = ["totp", "webauthn", "recovery_codes"]
 
 # Configurar TOTP (Google Authenticator, Authy, etc.)
 MFA_TOTP_ISSUER = "HodlWatcher"  # Nombre que aparecerá en la app de autenticación

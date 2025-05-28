@@ -5,21 +5,23 @@ volumes:
   production_tor_data: {}
   production_redis_data: {}
 
-
-
 services:
   django: &django
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-
     image: hodlwatcher_production_django
+    restart: always
     depends_on:
       - postgres
       - redis
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
+    # Añadir DNS para el servicio base django
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     command: /start
 
   postgres:
@@ -27,6 +29,7 @@ services:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
     image: hodlwatcher_production_postgres
+    restart: always
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
       - production_postgres_data_backups:/backups
@@ -38,6 +41,7 @@ services:
       context: .
       dockerfile: ./compose/production/traefik/Dockerfile
     image: hodlwatcher_production_traefik
+    restart: always
     depends_on:
       - django
     volumes:
@@ -49,24 +53,26 @@ services:
 
   redis:
     image: docker.io/redis:6
-
+    restart: always
     volumes:
       - production_redis_data:/data
-
 
   celeryworker:
     <<: *django
     image: hodlwatcher_production_celeryworker
+    restart: always
     command: /start-celeryworker
 
   celerybeat:
     <<: *django
     image: hodlwatcher_production_celerybeat
+    restart: always
     command: /start-celerybeat
 
   flower:
     <<: *django
     image: hodlwatcher_production_flower
+    restart: always
     command: /start-flower
 
   telegram:
@@ -74,6 +80,7 @@ services:
       context: .
       dockerfile: ./compose/production/telegram/Dockerfile
     image: hodlwatcher_production_telegram
+    restart: always
     depends_on:
       - postgres
       - redis
@@ -83,6 +90,10 @@ services:
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
+    # Añadir configuración DNS específica para telegram
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     command: /start-telegram
 
   # awscli:
@@ -99,7 +110,7 @@ services:
       context: .
       dockerfile: ./compose/production/tor/Dockerfile
     image: hodlwatcher_production_tor
-    restart: unless-stopped
+    restart: always
     depends_on:
       - traefik
     volumes:

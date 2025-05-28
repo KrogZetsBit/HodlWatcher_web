@@ -10,6 +10,8 @@ services:
       dockerfile: ./compose/local/django/Dockerfile
     image: hodlwatcher_local_django
     container_name: hodlwatcher_local_django
+    stdin_open: true
+    tty: true
     depends_on:
       - postgres
       - redis
