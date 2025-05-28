@@ -1,9 +1,7 @@
 # translation.py
-from modeltranslation.translator import TranslationOptions
-from modeltranslation.translator import translator
+from modeltranslation.translator import TranslationOptions, translator
 
-from .models import FAQ
-from .models import FAQCategory
+from .models import FAQ, FAQCategory
 
 
 class FAQTranslationOptions(TranslationOptions):

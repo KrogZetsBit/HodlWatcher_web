@@ -36,13 +36,9 @@
               <div class="row">
                 <div class="col-md-4 text-center">
                   {% if object.image.url %}
-                    <img src="{{ object.image.url }}"
-                         alt="Profile"
-                         width="200" />
+                    <img src="{{ object.image.url }}" alt="Profile" width="200" />
                   {% else %}
-                    <img src="{% static 'assets/profile.png' %}"
-                         alt="Profile"
-                         width="200" />
+                    <img src="{% static 'assets/profile.png' %}" alt="Profile" width="200" />
                   {% endif %}
                 </div>
                 <div class="col-md-8">

@@ -6,8 +6,7 @@ from celery.utils.log import get_task_logger
 from django.utils import timezone
 
 from . import utils
-from .models import InvestmentWatchdog
-from .models import WatchdogNotification
+from .models import InvestmentWatchdog, WatchdogNotification
 from .views import BuscadorView
 
 logger_task = get_task_logger(__name__)

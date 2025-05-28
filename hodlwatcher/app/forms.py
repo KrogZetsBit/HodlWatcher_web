@@ -6,9 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV3
 
-from .models import Configuracion
-from .models import ContactMessage
-from .models import InvestmentWatchdog
+from .models import Configuracion, ContactMessage, InvestmentWatchdog
 
 
 class ContactForm(forms.ModelForm):

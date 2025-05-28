@@ -2,8 +2,7 @@
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
-from .models import FAQ
-from .models import FAQCategory
+from .models import FAQ, FAQCategory
 
 
 class RelatedFAQsInline(admin.TabularInline):

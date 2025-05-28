@@ -2,10 +2,7 @@
 import dj_database_url
 
 from .base import *  # noqa: F403
-from .base import INSTALLED_APPS
-from .base import MIDDLEWARE
-from .base import REDIS_URL
-from .base import env
+from .base import INSTALLED_APPS, MIDDLEWARE, REDIS_URL, env
 
 # GENERAL
 # ------------------------------------------------------------------------------

@@ -126,8 +126,8 @@ ignore = [
 extend-unsafe-fixes = ["UP038"]
 
 [tool.ruff.lint.isort]
-force-single-line = true
+force-single-line = false
 
 [tool.flake8]
-# Check that this is aligned with your other tools
-max-line-length = 120
+max-line-length = 88
+extend-ignore = ["E203", "E701"]

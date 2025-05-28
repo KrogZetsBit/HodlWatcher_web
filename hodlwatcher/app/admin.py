@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from .models import (
-    Configuracion,
-    InvestmentWatchdog,
-    UsuarioTelegram,
-    WatchdogNotification,
-)
+from .models import Configuracion, InvestmentWatchdog, UsuarioTelegram, WatchdogNotification
 
 
 @admin.register(UsuarioTelegram)

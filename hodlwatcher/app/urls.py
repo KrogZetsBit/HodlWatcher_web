@@ -1,17 +1,19 @@
 from django.urls import path
 
-from .views import BuscadorView
-from .views import ContactView
-from .views import DeleteWatchdogView
-from .views import IndexView
-from .views import LinkTelegramView
-from .views import ProfileUpdateView
-from .views import UnlinkTelegramView
-from .views import WatchdogActivateView
-from .views import WatchdogCreateView
-from .views import WatchdogDeactivateView
-from .views import WatchdogListView
-from .views import delete_account
+from .views import (
+    BuscadorView,
+    ContactView,
+    DeleteWatchdogView,
+    IndexView,
+    LinkTelegramView,
+    ProfileUpdateView,
+    UnlinkTelegramView,
+    WatchdogActivateView,
+    WatchdogCreateView,
+    WatchdogDeactivateView,
+    WatchdogListView,
+    delete_account,
+)
 
 urlpatterns = [
     path("", IndexView.as_view(), name="home"),

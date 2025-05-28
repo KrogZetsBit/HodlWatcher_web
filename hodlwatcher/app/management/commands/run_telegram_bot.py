@@ -4,13 +4,9 @@ from asgiref.sync import sync_to_async
 from constance import config
 from django.core.management.base import BaseCommand
 from telegram import Update
-from telegram.ext import Application
-from telegram.ext import CallbackContext
-from telegram.ext import CommandHandler
+from telegram.ext import Application, CallbackContext, CommandHandler
 
-from hodlwatcher.app.models import Configuracion
-from hodlwatcher.app.models import InvestmentWatchdog
-from hodlwatcher.app.models import UsuarioTelegram
+from hodlwatcher.app.models import Configuracion, InvestmentWatchdog, UsuarioTelegram
 
 # Configurar logs
 logger = logging.getLogger(__name__)

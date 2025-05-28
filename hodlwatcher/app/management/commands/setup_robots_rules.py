@@ -2,8 +2,7 @@
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.management.base import BaseCommand
-from robots.models import Rule
-from robots.models import Url
+from robots.models import Rule, Url
 
 
 class Command(BaseCommand):
