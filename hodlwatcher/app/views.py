@@ -41,6 +41,7 @@ from .models import WatchdogNotification
 from .utils import delete_file
 from .utils import extract_currencies
 from .utils import extract_payment_methods
+from .utils import get_or_create_user_config_with_telegram
 
 logger = logging.getLogger(__name__)
 
@@ -80,48 +81,34 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("profile")
 
     def get_object(self, queryset=None):
-        try:
-            usuario_telegram = UsuarioTelegram.objects.filter(username=self.request.user.username).first()
+        return get_or_create_user_config_with_telegram(self.request.user)
 
-            configuracion, _ = Configuracion.objects.get_or_create(
-                user=self.request.user,
-                defaults={"user_telegram": usuario_telegram if usuario_telegram else None},
-            )
-        except UsuarioTelegram.DoesNotExist:
-            # Si no se encuentra usuario de Telegram, crea configuración sin él
-            configuracion, _ = Configuracion.objects.get_or_create(user=self.request.user)
-            return configuracion
-        else:
-            return configuracion
+    def _delete_old_image_if_changed(self, old_image_name, new_image_instance):
+        """
+        Deletes the old image if it has changed and exists.
+        """
+        if not old_image_name or not new_image_instance:
+            return
+
+        new_image_name = new_image_instance.name if new_image_instance else None
+
+        if old_image_name != new_image_name:
+            delete_file(old_image_name)
 
     def form_valid(self, form):
-        # Guardar referencia a la imagen actual antes de actualizar
         old_instance = self.get_object()
-        old_image = None
+        old_image_name = old_instance.image.name if hasattr(old_instance, "image") and old_instance.image else None
 
-        if hasattr(old_instance, "image") and old_instance.image:
-            old_image = old_instance.image.name
-
-        # Continuar con la lógica original
         form.instance.user = self.request.user
+        # Ensure user_telegram is correctly associated, get_or_create_user_config_with_telegram handles this in get_object
+        # but if the form directly manipulates user_telegram, it might need re-association.
+        # However, the form ConfiguracionForm does not seem to directly expose user_telegram for editing.
+        # So, relying on get_object's handling should be sufficient.
 
-        try:
-            usuario_telegram = UsuarioTelegram.objects.filter(username=self.request.user.username).first()
-            if usuario_telegram:
-                form.instance.user_telegram = usuario_telegram
-        except UsuarioTelegram.DoesNotExist:
-            pass
-
-        # Guardar el formulario con la nueva imagen
         response = super().form_valid(form)
 
-        # Si hay una nueva imagen y existía una imagen antigua, eliminar la antigua
-        if old_image and hasattr(form.instance, "image"):
-            new_image = form.instance.image.name if form.instance.image else None
-
-            # Solo eliminar si la imagen ha cambiado
-            if old_image != new_image and old_image:
-                delete_file(old_image)
+        # Delete old image if a new one was uploaded
+        self._delete_old_image_if_changed(old_image_name, form.instance.image)
 
         return response
 
@@ -129,11 +116,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
 
-        # Intentar obtener configuración de Telegram
-        try:
-            context["configuracion"] = user.configuracion
-        except Configuracion.DoesNotExist:
-            context["configuracion"] = None
+        context["configuracion"] = self.get_object()  # Use get_object to ensure consistency
 
         authenticators = {}
         for auth in Authenticator.objects.filter(user=self.request.user):
@@ -160,7 +143,12 @@ def delete_account(request):
         messages.error(request, "User doesnot exist")
         return redirect("home")
 
+    # Catching a broad AttributeError here. This might occur if `request.user` for some reason
+    # does not have a `username` attribute or if `u` is None before delete, though Django's
+    # get_object_or_404 or direct .get() would typically raise User.DoesNotExist first.
+    # It could also be other unexpected attribute errors within the try block.
     except AttributeError as e:
+        logger.error("AttributeError during account deletion for user %s: %s", request.user.username, e)
         messages.error(request, _("An unexpected error occurred: ") + str(e))
         return redirect("profile")
 
@@ -169,6 +157,36 @@ def delete_account(request):
 
 class BuscadorView(TemplateView):
     template_name = "app/buscador.html"
+    EXCHANGE_CONFIGS = [
+        {
+            "name": "Binance",
+            "url_template": "https://api.binance.com/api/v3/ticker/price?symbol=BTC{}",
+            "currency_param_processor": lambda currency: "USDT" if currency == "USD" else currency,
+            "price_key": "price",
+            "factor": 1,
+        },
+        {
+            "name": "Coinbase",
+            "url_template": "https://api.coinbase.com/v2/prices/BTC-{}/spot",
+            "currency_param_processor": lambda currency: currency,
+            "price_key": "data.amount",
+            "factor": 1,
+        },
+        {
+            "name": "Kraken",
+            "url_template": "https://api.kraken.com/0/public/Ticker?pair=XBT{}",
+            "currency_param_processor": lambda currency: currency,
+            "price_key": "result.XXBTZ{}.c.0",  # Note: currency needs to be injected here too
+            "factor": 1,
+        },
+        {
+            "name": "Gemini",
+            "url_template": "https://api.gemini.com/v1/pubticker/btc{}",
+            "currency_param_processor": lambda currency: currency.lower(),
+            "price_key": "last",
+            "factor": 1,
+        },
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -192,6 +210,75 @@ class BuscadorView(TemplateView):
         )
         return session
 
+    def _get_exchange_data(self, currency):
+        """Generates exchange data based on the currency from EXCHANGE_CONFIGS."""
+        exchange_data = []
+        for config_item in self.EXCHANGE_CONFIGS:
+            processed_currency = config_item["currency_param_processor"](currency)
+            url = config_item["url_template"].format(processed_currency)
+            # Special handling for Kraken's price_key which also needs currency
+            price_key = config_item["price_key"]
+            if config_item["name"] == "Kraken":
+                price_key = config_item["price_key"].format(currency)
+
+            exchange_data.append(
+                (
+                    config_item["name"],
+                    url,
+                    price_key,
+                    config_item["factor"],
+                )
+            )
+        return exchange_data
+
+    def _fetch_prices_from_exchanges(self, exchanges):
+        """Fetch prices from exchanges"""
+        prices = []
+        for name, url, price_key, factor in exchanges:
+            try:
+                price = self._fetch_price_from_exchange(name, url, price_key)
+                if price:
+                    price_value = float(price) * factor
+                    if price_value > 0:
+                        prices.append(price_value)
+            except requests.RequestException as e:
+                logger.error("Error fetching price from %s: %s", name, e)
+            except (ValueError, KeyError) as e:
+                logger.error("Error parsing price from %s: %s", name, e)
+            except Exception as e: # Catch any other unexpected errors
+                logger.exception("Unexpected error processing exchange %s: %s", name, e)
+        return prices
+
+    def _fetch_price_from_exchange(self, exchange_name, url, price_key):
+        """Fetch price from a single exchange"""
+        try:
+            response = self.http_client.get(url, timeout=3)
+            response.raise_for_status()
+            data = response.json()
+
+            price = data
+            for key_part in price_key.split("."):
+                if key_part.startswith("[") and key_part.endswith("]"):
+                    try:
+                        index = int(key_part[1:-1])
+                        price = price[index]
+                    except (IndexError, ValueError) as e:
+                        logger.error("Error accessing index %s in price data for %s. Data: %s", key_part, exchange_name, price)
+                        raise KeyError(f"Invalid index {key_part} for {exchange_name}") from e
+                else:
+                    price = price.get(key_part, None)
+                    if price is None:
+                        logger.warning("Price key '%s' not found for %s in data. URL: %s", price_key, exchange_name, url)
+                        return None # Or raise KeyError if this should be fatal
+            return price
+        except requests.RequestException as e:
+            logger.error("HTTP error fetching price for %s from %s: %s", exchange_name, url, e)
+            raise  # Re-raise to be caught by the caller
+        except ValueError as e: # JSONDecodeError inherits from ValueError
+            logger.error("JSON decoding error for %s from %s: %s", exchange_name, url, e)
+            raise # Re-raise to be caught by the caller
+
+
     def get_average_price(self, currency):
         """Obtiene el precio promedio de BTC con cache y manejo de errores"""
         cache_key = f"average_price_{currency}"
@@ -205,71 +292,11 @@ class BuscadorView(TemplateView):
         prices = self._fetch_prices_from_exchanges(exchanges)
 
         average_price = self._calculate_average_price(prices)
-        cache.set(cache_key, average_price, 60 * 11)
+        cache.set(cache_key, average_price, 60 * 11) # Cache for 11 minutes
         return average_price
 
-    def _get_exchange_data(self, currency):
-        """Define exchange data"""
-        return [
-            (
-                "Binance",
-                f"https://api.binance.com/api/v3/ticker/price?symbol=BTC{'USDT' if currency == 'USD' else currency}",
-                "price",
-                1,
-            ),
-            (
-                "Coinbase",
-                f"https://api.coinbase.com/v2/prices/BTC-{currency}/spot",
-                "data.amount",
-                1,
-            ),
-            (
-                "Kraken",
-                f"https://api.kraken.com/0/public/Ticker?pair=XBT{currency}",
-                "result.XXBTZ{currency}.c.0",
-                1,
-            ),
-            (
-                "Gemini",
-                f"https://api.gemini.com/v1/pubticker/btc{currency.lower()}",
-                "last",
-                1,
-            ),
-        ]
-
-    def _fetch_prices_from_exchanges(self, exchanges):
-        """Fetch prices from exchanges"""
-        prices = []
-        for name, url, price_key, factor in exchanges:
-            try:
-                price = self._fetch_price_from_exchange(url, price_key)
-                if price:
-                    price_value = float(price) * factor
-                    if price_value > 0:
-                        prices.append(price_value)
-            except Exception:
-                logger.exception("Error en %s", name)
-        return prices
-
-    def _fetch_price_from_exchange(self, url, price_key):
-        """Fetch price from a single exchange"""
-        response = self.http_client.get(url, timeout=3)
-        response.raise_for_status()
-        data = response.json()
-
-        price = data
-        for key in price_key.split("."):
-            if key.startswith("[") and key.endswith("]"):
-                index = int(key[1:-1])
-                price = price[index]
-            else:
-                price = price.get(key, None)
-                if price is None:
-                    break
-        return price
-
     def _calculate_average_price(self, prices):
-        """Calculate average price with filtering"""
+        """Calculate average price with filtering. Original logic preserved."""
         min_prices_for_average = 2
         if len(prices) >= min_prices_for_average:
             try:
@@ -328,68 +355,89 @@ class BuscadorView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["request"] = self.request
+        context["request"] = self.request # For template access to request object
 
-        # Configuración inicial
-        context.update(
-            {
-                "payment_methods": self.cached_payment_methods(),
-                "asset": {"code": "BTC", "name": "Bitcoin"},
-                "currencies": self.cached_currecies(),
-            }
-        )
+        # Initial data for the form and context
+        context.update({
+            "payment_methods": self.cached_payment_methods(),
+            "asset": {"code": "BTC", "name": "Bitcoin"}, # Currently fixed
+            "currencies": self.cached_currecies(),
+        })
 
-        params = {
+        params = self._get_request_params()
+        context["form_data"] = params
+
+        try:
+            average_price = self.get_average_price(params["currency_code"])
+            context["average_price"] = average_price
+
+            offers_data = self._fetch_hodlhodl_offers(params)
+            processed_offers, meta = self._process_offers(
+                offers_data,
+                average_price,
+                params["side"],
+                self.request.GET.get("new_user") # no_trades filter
+            )
+            context["offers"] = processed_offers
+            context["meta"] = meta
+            context["no_trades"] = self.request.GET.get("new_user")
+
+        except requests.RequestException as e:
+            logger.error("Error fetching data for BuscadorView: %s", e)
+            context["error"] = f"Error al obtener datos: {e!s}"
+            context["offers"] = []
+            context["average_price"] = None
+        except Exception as e: # Catch any other unexpected errors
+            logger.exception("Unexpected error in BuscadorView.get_context_data: %s", e)
+            context["error"] = _("An unexpected error occurred.")
+            context["offers"] = []
+            context["average_price"] = None
+        return context
+
+    def _get_request_params(self):
+        """Extracts and manages request GET parameters."""
+        return {
             "side": self.request.GET.get("side", "sell"),
-            "payment_method_id": self.request.GET.get("payment_method_id", "52"),
-            "asset_code": "BTC",
+            "payment_method_id": self.request.GET.get("payment_method_id", "52"), # Default SEPA
+            "asset_code": "BTC", # Fixed for now
             "currency_code": self.request.GET.get("currency_code", "EUR"),
             "amount": self.request.GET.get("amount", ""),
         }
 
-        context["form_data"] = params
+    def _fetch_hodlhodl_offers(self, params):
+        """Handles the API call to HodlHodl."""
+        api_params = {
+            **{f"filters[{k}]": v for k, v in params.items() if v}, # Ensure only params with values are sent
+            "filters[include_global]": "true",
+            "pagination[limit]": "100", # Consider making this configurable or dynamic
+        }
+        response = self.http_client.get("https://hodlhodl.com/api/v1/offers", params=api_params)
+        response.raise_for_status() # Will raise HTTPError for bad responses (4XX or 5XX)
+        return response.json()
 
-        try:
-            # Obtener precio promedio (con cache)
-            average_price = self.get_average_price(params["currency_code"])
-            context["average_price"] = average_price
+    def _process_offers(self, offers_data, average_price, side, no_trades_filter):
+        """Filters and processes offers."""
+        offers_list = offers_data.get("offers", [])
 
-            # Obtener ofertas
-            response = self.http_client.get(
-                "https://hodlhodl.com/api/v1/offers",
-                params={
-                    **{f"filters[{k}]": v for k, v in params.items()},
-                    "filters[include_global]": "true",
-                    "pagination[limit]": "100",
-                },
-            )
-            response.raise_for_status()
-            data = response.json()
+        if no_trades_filter: # 'new_user' effectively means trades_count >= 0
+            filtered_by_trades = [
+                offer for offer in offers_list if offer.get("trader", {}).get("trades_count", 0) >= 0
+            ]
+        else: # Default is trades_count >= 1
+            filtered_by_trades = [
+                offer for offer in offers_list if offer.get("trader", {}).get("trades_count", 0) >= 1
+            ]
 
-            # Filtrar y procesar ofertas
-            no_trades = self.request.GET.get("new_user")
-            if no_trades:
-                offers = [
-                    offer for offer in data.get("offers", []) if offer.get("trader", {}).get("trades_count", 0) >= 0
-                ]
-            else:
-                offers = [
-                    offer for offer in data.get("offers", []) if offer.get("trader", {}).get("trades_count", 0) >= 1
-                ]
-            context["no_trades"] = no_trades
-            offers = self.calculate_price_deviation(offers, average_price)
-            if params["side"] == "buy":
-                context["offers"] = sorted(offers, key=lambda x: x["percent_deviation"], reverse=True)
-            else:
-                context["offers"] = offers
-            context["meta"] = data.get("meta", {})
+        processed_offers = self.calculate_price_deviation(filtered_by_trades, average_price)
 
-        except requests.RequestException as e:
-            context["error"] = f"Error al obtener datos: {e!s}"
-            context["offers"] = []
-            context["average_price"] = None
+        if side == "buy":
+            # For buy offers, sort by percent_deviation descending (best deals first)
+            # Ensure 'percent_deviation' exists and handle None if necessary
+            processed_offers.sort(key=lambda x: x.get("percent_deviation", -float('inf')) if x.get("percent_deviation") is not None else -float('inf'), reverse=True)
+        # For sell offers, default sorting (as returned by API or by price deviation calculation) is usually fine.
+        # If specific sorting is needed for sell, it would be added here.
 
-        return context
+        return processed_offers, offers_data.get("meta", {})
 
 
 class WatchdogListView(LoginRequiredMixin, ListView):
@@ -409,12 +457,15 @@ class WatchdogListView(LoginRequiredMixin, ListView):
         context["max_watchdogs"] = config.MAX_WATCHDOGS
         context["historial_alertas"] = WatchdogNotification.objects.filter(
             watchdog__user=self.request.user
-        ).prefetch_related("watchdog")
+        ).select_related("watchdog") # Use select_related for ForeignKey
 
-        payment_methods = cache.get("payment_methods") or []
+        # Get payment_methods from cache (assuming it's populated by BuscadorView or similar)
+        # The structure from extract_payment_methods is a list of dicts: [{'id': 'X', 'name': 'Y', ...}]
+        payment_methods_list = cache.get("payment_methods") or extract_payment_methods() # Ensure it's loaded if not in cache
 
         # Crear un diccionario para búsqueda rápida por ID
-        payment_methods_dict = {method["id"]: method["name"] for method in payment_methods}
+        # This is efficient enough for typical numbers of payment methods.
+        payment_methods_dict = {str(method["id"]): method["name"] for method in payment_methods_list}
         context["payment_methods_dict"] = payment_methods_dict
 
         return context
@@ -429,19 +480,8 @@ class WatchdogCreateView(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         """Añadir el usuario_telegram a los kwargs del formulario."""
         kwargs = super().get_form_kwargs()
-
-        # Buscar el usuario_telegram asociado al usuario actual
-        try:
-            configuracion = Configuracion.objects.get(user=self.request.user)
-            kwargs["usuario_telegram"] = configuracion.user_telegram
-        except Configuracion.DoesNotExist:
-            # Si no existe configuración, intentar buscar directamente el usuario_telegram
-            try:
-                usuario_telegram = UsuarioTelegram.objects.filter(username=self.request.user.username).first()
-                kwargs["usuario_telegram"] = usuario_telegram
-            except UsuarioTelegram.DoesNotExist:
-                pass
-
+        configuracion = get_or_create_user_config_with_telegram(self.request.user)
+        kwargs["usuario_telegram"] = configuracion.user_telegram
         return kwargs
 
     def get_initial(self):
@@ -460,39 +500,43 @@ class WatchdogCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "payment_methods": [
-                    {"code": "EUR", "name": "Transferencia SEPA"},
-                    {"code": "USD", "name": "Transferencia Bancaria"},
-                ],
-                "assets": {"code": "BTC", "name": "Bitcoin"},
-                "currencies": [
-                    {"code": "EUR", "name": "Euros"},
-                    {"code": "USD", "name": "Dólar Americano"},
-                ],
-                "current_count": self.request.user.watchdogs.filter(active=True).count(),
-                "max_watchdogs": config.MAX_WATCHDOGS,
-            }
-        )
+
+        # Fetch dynamic data for dropdowns, similar to BuscadorView
+        # Ensure these utils return data in a format suitable for the template/form
+        # extract_payment_methods returns list of dicts with 'id', 'name', 'type'
+        # extract_currencies returns list of dicts with 'code', 'name'
+        cached_payment_methods = cache.get("payment_methods") or extract_payment_methods()
+        cached_currencies = cache.get("currencies") or extract_currencies()
+
+        context.update({
+            "payment_methods": cached_payment_methods,
+            "assets": [{"code": "BTC", "name": "Bitcoin"}], # Currently fixed asset
+            "currencies": cached_currencies,
+            "current_count": self.request.user.watchdogs.filter(active=True).count(),
+            "max_watchdogs": config.MAX_WATCHDOGS,
+        })
 
         # Preparar datos para el resumen
-        form = context["form"]
-        summary_data = {
-            "side": dict(InvestmentWatchdog.SIDE_CHOICES).get(form["side"].value(), "sell"),
-            "currency": next(
-                (c["name"] for c in context["currencies"] if c["code"] == form["currency"].value()),
-                "EUR",
-            ),
-            "payment_method": next(
-                (p["name"] for p in context["payment_methods"] if p["code"] == form["payment_method_id"].value()),
-                "Transferencia SEPA",
-            ),
-            "asset": "Bitcoin",
-            "amount": form["amount"].value() or "150",
-            "rate_fee": f"{float(form['rate_fee'].value() or 0):.2f}%",
-        }
-        context["summary_data"] = summary_data
+        form = context.get("form") # Get the form instance from context
+        if form: # Ensure form is present
+            summary_data = {
+                "side": dict(InvestmentWatchdog.SIDE_CHOICES).get(form.initial.get("side") or form.data.get("side", "sell")),
+                "currency": next(
+                    (c["name"] for c in cached_currencies if c["code"] == (form.initial.get("currency") or form.data.get("currency"))),
+                    "N/A",
+                ),
+                "payment_method": next(
+                    (pm["name"] for pm in cached_payment_methods if str(pm["id"]) == str(form.initial.get("payment_method_id") or form.data.get("payment_method_id"))),
+                    "N/A",
+                ),
+                "asset": "Bitcoin", # Fixed
+                "amount": form.initial.get("amount") or form.data.get("amount", "0"),
+                "rate_fee": f"{float(form.initial.get('rate_fee') or form.data.get('rate_fee', 0)):.2f}%",
+            }
+            context["summary_data"] = summary_data
+        else:
+            context["summary_data"] = {}
+
 
         return context
 
@@ -614,9 +658,10 @@ class LinkTelegramView(LoginRequiredMixin, FormView):
                 return redirect("link_telegram")
 
             # Actualizar la configuración del usuario
-            config, created = Configuracion.objects.get_or_create(user=self.request.user)
-            config.user_telegram = user_telegram
-            config.save()
+            # Use the utility function to ensure Configuracion exists and link Telegram user
+            configuracion = get_or_create_user_config_with_telegram(self.request.user)
+            configuracion.user_telegram = user_telegram # Link the found UserTelegram
+            configuracion.save()
 
             messages.success(self.request, _("Telegram account successfully linked!"))
 
@@ -626,6 +671,11 @@ class LinkTelegramView(LoginRequiredMixin, FormView):
                 _("No Telegram user with that name was found. Please make sure you have started our bot with /start."),
             )
             return redirect("link_telegram")
+        except Exception as e: # Catch other potential errors
+            logger.error("Error linking Telegram account for user %s: %s", self.request.user.username, e)
+            messages.error(self.request, _("An unexpected error occurred while linking the Telegram account."))
+            return redirect("link_telegram")
+
 
         return super().form_valid(form)
 
@@ -635,15 +685,22 @@ class UnlinkTelegramView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         try:
-            configuracion = request.user.configuracion
+            # Use the utility function to get configuration, ensuring it exists
+            configuracion = get_or_create_user_config_with_telegram(request.user)
             if configuracion.user_telegram:
-                # Solo desvinculamos, no eliminamos el usuario de Telegram
                 configuracion.user_telegram = None
                 configuracion.save()
                 messages.success(request, _("Your Telegram account has been successfully unlinked."))
             else:
                 messages.info(request, _("You didn't have any linked Telegram accounts."))
-        except Configuracion.DoesNotExist:
+        # Configuracion.DoesNotExist should not happen if get_or_create_user_config_with_telegram is used,
+        # but kept for safety or if called from elsewhere without this utility.
+        except Configuracion.DoesNotExist: # Should be rare with get_or_create_user_config_with_telegram
+            logger.warning("Configuracion.DoesNotExist during unlink for user %s", request.user.username)
             messages.error(request, _("Your configuration was not found."))
+        except Exception as e:
+            logger.error("Error unlinking Telegram account for user %s: %s", request.user.username, e)
+            messages.error(self.request, _("An unexpected error occurred while unlinking the Telegram account."))
+
 
         return redirect("profile")

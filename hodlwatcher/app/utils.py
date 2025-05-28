@@ -326,3 +326,23 @@ def delete_file(file_path):
         return False
     else:
         return False
+
+
+def get_or_create_user_config_with_telegram(user):
+    """
+    Obtiene o crea la Configuracion para un usuario y la asocia con su UsuarioTelegram si existe.
+    """
+    from .models import Configuracion, UsuarioTelegram  # Late import to avoid circular dependencies
+
+    configuracion, created = Configuracion.objects.get_or_create(user=user)
+
+    if created or not configuracion.user_telegram:
+        try:
+            usuario_telegram = UsuarioTelegram.objects.filter(username=user.username).first()
+            if usuario_telegram:
+                configuracion.user_telegram = usuario_telegram
+                configuracion.save()
+        except UsuarioTelegram.DoesNotExist:
+            # No es necesario hacer nada si el UsuarioTelegram no existe
+            pass
+    return configuracion
